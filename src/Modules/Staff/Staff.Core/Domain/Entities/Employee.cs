@@ -1,5 +1,6 @@
 ﻿using BuildingBlocks.Domain.Entities;
 using Staff.Core.Domain.ValueObjects;
+using Staff.Core.Security;
 
 namespace Staff.Core.Domain.Entities;
 
@@ -9,12 +10,11 @@ public sealed class Employee : Entity, IAgregateRoot
     public FirstName FirstName { get; private set; }
     public LastName LastName { get; private set; }
     public Email Email { get; private set; }
-    public string Password { get; private set; }
-    public string HashPassword { get; private set; }
+    public PasswordHash PasswordHash { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
     public Role Role { get; private set; }
 
-    private Employee(EmployeeId id, FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, Role role, string hashPassword)
+    private Employee(EmployeeId id, FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, Role role, PasswordHash passwordHash)
     {
         Id = id;
         FirstName = firstName;
@@ -22,23 +22,22 @@ public sealed class Employee : Entity, IAgregateRoot
         Email = email;
         PhoneNumber = phoneNumber;
         Role = role;
-        HashPassword = hashPassword;
+        PasswordHash = passwordHash;
     }
 
-    public static Employee CreateReceptionist(FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, string password)
+    public static Employee CreateReceptionist(FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, Password password, IPasswordManager passwordManager)
     {
-        return new(Guid.NewGuid(), firstName, lastName, email, phoneNumber, Role.Receptionist);
+        return CreateEmployee(firstName, lastName, email, phoneNumber, Role.Receptionist, password, passwordManager);
     }
 
-    public static Employee CreateRoomServicer(FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, string password)
+    public static Employee CreateRoomServicer(FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, Password password, IPasswordManager passwordManager)
     {
-        var test = CreateEmployee(Guid.NewGuid(), firstName, lastName, email, phoneNumber, Role.RoomServicer, password);
-        return new(Guid.NewGuid(), firstName, lastName, email, phoneNumber, Role.RoomServicer);
+        return CreateEmployee(firstName, lastName, email, phoneNumber, Role.RoomServicer, password, passwordManager);
     }
 
-    private static Employee CreateEmployee(EmployeeId id, FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, Role role, string password)
+    private static Employee CreateEmployee(FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, Role role, Password password, IPasswordManager passwordManager)
     {
-        //Need add HashPassword
-        Password = "HashPassword";
+        var passwordHash = passwordManager.HashPassword(password);
+        return new(Guid.NewGuid(), firstName, lastName, email, phoneNumber, role, passwordHash);
     }
 }
