@@ -7,5 +7,5 @@ public interface IModule
 {
     IServiceCollection RegisterServices(IServiceCollection services);
 
-    IEndpointRouteBuilder ExposeEndpoints(IEndpointRouteBuilder endpointRouteBuilder);
+    IEndpointRouteBuilder ExposeEndpoints(IEndpointRouteBuilder endpoints);
 }
