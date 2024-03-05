@@ -2,7 +2,7 @@
 using Staff.Core.Domain.Entities;
 using Staff.Core.Security;
 
-namespace Staff.Core.Commands.Employees.SignUpReceptionist;
+namespace Staff.Core.Features.SignUpReceptionist;
 
 internal class SignUpReceptionistCommandHandler : ICommandHandler<SignUpReceptionistCommand>
 {
