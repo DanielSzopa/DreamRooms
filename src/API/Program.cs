@@ -3,10 +3,11 @@ using BuildingBlocks.Modules;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
+var configuration = builder.Configuration;
 
 services
     .AddBuildingBlocksServices()
-    .RegisterModulesServices();
+    .RegisterModulesServices(configuration);
 
 
 var app = builder.Build();

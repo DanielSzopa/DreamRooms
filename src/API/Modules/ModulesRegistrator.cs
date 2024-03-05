@@ -10,11 +10,11 @@ internal static class ModulesRegistrator
         new StaffModule()
     ];
 
-    internal static IServiceCollection RegisterModulesServices(this IServiceCollection services)
+    internal static IServiceCollection RegisterModulesServices(this IServiceCollection services, IConfiguration configuration)
     {
         foreach(var module in _modules)
         {
-            module.RegisterServices(services);
+            module.RegisterServices(services, configuration);
         }
 
         return services;

@@ -4,7 +4,7 @@ namespace BuildingBlocks.Domain.ValueObjects;
 
 public abstract record TypedIdValueBase
 {
-    protected Guid Value { get; }
+    public Guid Value { get; }
 
     protected TypedIdValueBase(Guid value)
     {
