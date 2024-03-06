@@ -26,3 +26,14 @@
 - .NET 8
 - Authentication (private/public signed keys)
 - Quartz
+
+### Where I get knowledge:
+
+#### Repositories:
+
+- [Inflow](https://github.com/devmentors/Inflow)
+- [modular-monolith-with-ddd](https://github.com/kgrzybek/modular-monolith-with-ddd)
+
+#### Blogs:
+
+- [Kamil Grzybek](https://www.kamilgrzybek.com/)
