@@ -1,6 +1,7 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
 using Microsoft.EntityFrameworkCore;
 using Staff.Core.Domain.Entities;
+using Staff.Core.Domain.Exceptions;
 using Staff.Core.Domain.ValueObjects;
 using Staff.Core.Persistence;
 using Staff.Core.Security;
@@ -20,14 +21,11 @@ internal class SignUpReceptionistCommandHandler : ICommandHandler<SignUpReceptio
 
     public async Task HandleAsync(SignUpReceptionistCommand command, CancellationToken cancellationToken = default)
     {
-        if(await staffDbContext.Employees.AnyAsync(e => e.Email == new Email(command.Email)))
-        {
-            //Change exception to specify one later
-            throw new Exception("Email already exists!!!");
-        }
+        if (await staffDbContext.Employees.AnyAsync(e => e.Email == new Email(command.Email)))
+            throw new EmailAlreadyExistsException(command.Email);
+
         var receptionist = Employee
             .CreateReceptionist(command.FirstName, command.LastName, command.Email, command.PhoneNumber, command.Password, _passwordManager);
-        await staffDbContext.AddAsync(receptionist);
-        await staffDbContext.SaveChangesAsync();
+        await staffDbContext.AddAsync(receptionist, cancellationToken);
     }
 }
