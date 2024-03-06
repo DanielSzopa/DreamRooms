@@ -16,3 +16,9 @@ app.UseHttpsRedirection();
 app.ExposeModulesEndpoints();
 
 app.Run();
+
+
+//Todo:
+// Repositories
+// Validation decorator
+// Rest API files
