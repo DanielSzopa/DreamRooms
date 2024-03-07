@@ -19,6 +19,6 @@ app.Run();
 
 
 //Todo:
-// Repositories
 // Validation decorator
-// Rest API files
+// Middleware
+// Simple logs

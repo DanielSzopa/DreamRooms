@@ -1,6 +1,7 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
 using BuildingBlocks.Commands;
 using BuildingBlocks.UnitOfWork;
+using BuildingBlocks.Validators;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks;
@@ -23,6 +24,7 @@ public static class ServicesCollectionExtensions
             .WithScopedLifetime());
 
         services.Decorate(typeof(ICommandHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
+        services.Decorate(typeof(ICommandHandler<>), typeof(ValidatorCommandHandlerDecorator<>));
 
         return services;
     }

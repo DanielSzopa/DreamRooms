@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Abstractions.Modules;
+using FluentValidation;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,7 @@ public class StaffModule : IModule
     public IServiceCollection RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
         return services
+            .AddValidatorsFromAssemblyContaining(typeof(StaffModule), includeInternalTypes: true)
             .AddSecurity()
             .AddStaffPersistence(configuration);
     }
