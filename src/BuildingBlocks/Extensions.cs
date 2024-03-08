@@ -1,16 +1,33 @@
-﻿namespace BuildingBlocks;
+﻿using BuildingBlocks.Abstractions.Commands;
+using BuildingBlocks.Commands;
+using BuildingBlocks.Middlewares;
+using BuildingBlocks.UnitOfWork;
+using BuildingBlocks.Validators;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace BuildingBlocks;
 
 public static class Extensions
 {
-    public static string GetModuleName(this Type type)
+    public static IServiceCollection AddBuildingBlocksServices(this IServiceCollection services)
     {
-        if (type?.Namespace is null)
-        {
-            return string.Empty;
-        }
+        return services
+            .AddExceptionHandler<GlobalExcepionsMiddleware>()
+            .AddCommandHandlers()
+            .AddSingleton(new UnitOfWorkTypeRegistery())
+            .AddSingleton<ICommandDispatcher, CommandDispatcher>();
+    }
 
-        return type.Namespace
-            .Split(".")
-            .First();
+    private static IServiceCollection AddCommandHandlers(this IServiceCollection services)
+    {
+        services.Scan(scan => scan.FromApplicationDependencies()
+        .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<>)))
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
+
+        services.Decorate(typeof(ICommandHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
+        services.Decorate(typeof(ICommandHandler<>), typeof(ValidatorCommandHandlerDecorator<>));
+
+        return services;
     }
 }

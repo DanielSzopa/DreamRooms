@@ -1,4 +1,6 @@
-﻿namespace BuildingBlocks.UnitOfWork;
+﻿using BuildingBlocks.Modules;
+
+namespace BuildingBlocks.UnitOfWork;
 
 public class UnitOfWorkTypeRegistery
 {

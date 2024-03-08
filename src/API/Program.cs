@@ -13,6 +13,7 @@ services
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+app.UseExceptionHandler(x => { });
 app.ExposeModulesEndpoints();
 
 app.Run();
