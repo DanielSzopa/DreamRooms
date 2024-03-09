@@ -28,10 +28,14 @@ public class GlobalExcepionsMiddleware : IExceptionHandler
                 validationProblemDetails.Extend(httpContext.Request?.Path, validationEx.Errors?.ToList());
                 httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 httpContext.Response.ContentType = "application/problem+json";
-                var json = JsonSerializer.Serialize(validationProblemDetails);
-                await httpContext.Response.WriteAsync(json, cancellationToken);
+                var response = JsonSerializer.Serialize(validationProblemDetails);
+                await httpContext.Response.WriteAsync(response, cancellationToken);
                 break;
             case DreamRoomsException:
+                var ex = (DreamRoomsException)exception;
+                var problemDetails = new DreamRoomsExProblemDetails(httpContext.TraceIdentifier, ex.Message);
+                httpContext.Response.StatusCode = (int)ex.HttpStatusCode;
+                await httpContext.Response.WriteAsJsonAsync(problemDetails);
                 break;
             default:
                 break;
