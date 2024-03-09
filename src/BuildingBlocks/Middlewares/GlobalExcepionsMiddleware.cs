@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Net;
+using System.Net.Mime;
 using System.Text.Json;
 
 namespace BuildingBlocks.Middlewares;
@@ -27,7 +28,7 @@ public class GlobalExcepionsMiddleware : IExceptionHandler
                 var validationEx = (ValidationException)exception;
                 validationProblemDetails.Extend(httpContext.Request?.Path, validationEx.Errors?.ToList());
                 httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                httpContext.Response.ContentType = "application/problem+json";
+                httpContext.Response.ContentType = MediaTypeNames.Application.ProblemJson;
                 var response = JsonSerializer.Serialize(validationProblemDetails);
                 await httpContext.Response.WriteAsync(response, cancellationToken);
                 break;
@@ -35,9 +36,14 @@ public class GlobalExcepionsMiddleware : IExceptionHandler
                 var ex = (DreamRoomsException)exception;
                 var problemDetails = new DreamRoomsExProblemDetails(httpContext.TraceIdentifier, ex.Message);
                 httpContext.Response.StatusCode = (int)ex.HttpStatusCode;
-                await httpContext.Response.WriteAsJsonAsync(problemDetails);
+                await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
                 break;
             default:
+                var internalServerError = new InternalServerErrorProblemDetails(httpContext?.TraceIdentifier, httpContext.Request?.Path);
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                httpContext.Response.ContentType = MediaTypeNames.Application.ProblemJson;
+                var json = JsonSerializer.Serialize(internalServerError);
+                await httpContext.Response.WriteAsync(json, cancellationToken);
                 break;
         }
 
