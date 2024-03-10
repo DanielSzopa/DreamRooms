@@ -9,5 +9,5 @@ internal class InvalidPasswordException : DreamRoomsException
     {
     }
 
-    protected override HttpStatusCode HttpStatusCode => HttpStatusCode.BadRequest;
+    public override HttpStatusCode HttpStatusCode => HttpStatusCode.BadRequest;
 }

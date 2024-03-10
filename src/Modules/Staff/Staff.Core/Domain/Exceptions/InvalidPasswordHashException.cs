@@ -9,6 +9,6 @@ namespace Staff.Core.Domain.Exceptions
         {
         }
 
-        protected override HttpStatusCode HttpStatusCode => HttpStatusCode.BadRequest;
+        public override HttpStatusCode HttpStatusCode => HttpStatusCode.BadRequest;
     }
 }

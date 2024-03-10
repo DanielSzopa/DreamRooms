@@ -2,10 +2,11 @@
 
 POST {{host}}/staff/receptionist
 Content-Type: application/json
+
 {
     "FirstName": "Phill",
     "LastName": "Cash",
-    "Email": "phill-cache@gmail.com",
+    "Email": "phill.cache@gmail.com",
     "PhoneNumber": "535 535 535",
     "Password": "Password123",
     "ConfirmedPassword": "Password123"

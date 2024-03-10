@@ -1,9 +1,13 @@
-﻿namespace BuildingBlocks.Middlewares.ProblemDetails;
+﻿using System.Text.Json.Serialization;
+
+namespace BuildingBlocks.Middlewares.ProblemDetails;
 
 internal class DreamRoomsExProblemDetails
 {
-    internal string TraceId { get; }
+    [JsonInclude]
     internal string Message { get;}
+    [JsonInclude]
+    internal string TraceId { get; }
     internal DreamRoomsExProblemDetails(string traceId, string message)
     {
         TraceId = traceId;
