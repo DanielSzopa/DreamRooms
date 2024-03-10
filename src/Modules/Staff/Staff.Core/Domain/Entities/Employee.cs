@@ -25,12 +25,12 @@ public sealed class Employee : Entity, IAgregateRoot
         PasswordHash = passwordHash;
     }
 
-    public static Employee CreateReceptionist(FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, Password password, IPasswordManager passwordManager)
+    internal static Employee CreateReceptionist(FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, Password password, IPasswordManager passwordManager)
     {
         return CreateEmployee(firstName, lastName, email, phoneNumber, Role.Receptionist, password, passwordManager);
     }
 
-    public static Employee CreateRoomServicer(FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, Password password, IPasswordManager passwordManager)
+    internal static Employee CreateRoomServicer(FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, Password password, IPasswordManager passwordManager)
     {
         return CreateEmployee(firstName, lastName, email, phoneNumber, Role.RoomServicer, password, passwordManager);
     }
