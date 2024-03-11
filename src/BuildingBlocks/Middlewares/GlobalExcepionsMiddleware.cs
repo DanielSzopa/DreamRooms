@@ -22,17 +22,22 @@ public class GlobalExcepionsMiddleware : IExceptionHandler
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
+        var traceId = httpContext?.TraceIdentifier;
+
         GlobalExceptionHandlerParametersDto dto = default;
         switch (exception)
         {
             case ValidationException:
                 dto = HandleValidationException(httpContext.Request, (ValidationException)exception);
+                _logger.LogError(exception, "Validation failed [TraceId: {traceId}]",traceId);
                 break;
             case DreamRoomsException:
-                dto = HandleDreamRoomsException(httpContext?.TraceIdentifier, (DreamRoomsException)exception);
+                dto = HandleDreamRoomsException(traceId, (DreamRoomsException)exception);
+                _logger.LogError(exception, "{message} [TraceId: {traceId}]", exception.Message, traceId);
                 break;
             default:
                 dto = HandleInternalServerError(httpContext);
+                _logger.LogError(exception, "{message} [TraceId: {traceId}]", exception.Message, traceId);
                 break;
         }
 

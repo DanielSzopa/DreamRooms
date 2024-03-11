@@ -13,4 +13,9 @@ internal static class Extensions
             .Split(".")
             .First();
     }
+
+    internal static string GetModuleName(this object obj)
+    {
+        return obj?.GetType().GetModuleName();
+    }
 }

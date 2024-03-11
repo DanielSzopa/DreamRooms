@@ -20,6 +20,7 @@ app.Run();
 
 
 //Todo:
-// Validation decorator
-// Middleware
-// Simple logs
+//Logs - Maybe first without serilog
+//New modules - Reservations, Room Service - Creating entity inside these modules also
+//Add context
+

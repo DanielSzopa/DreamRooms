@@ -1,5 +1,6 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
 using BuildingBlocks.Commands;
+using BuildingBlocks.Logging;
 using BuildingBlocks.Middlewares;
 using BuildingBlocks.UnitOfWork;
 using BuildingBlocks.Validators;
@@ -12,6 +13,7 @@ public static class Extensions
     public static IServiceCollection AddBuildingBlocksServices(this IServiceCollection services)
     {
         return services
+            .AddHttpContextAccessor()
             .AddExceptionHandler<GlobalExcepionsMiddleware>()
             .AddCommandHandlers()
             .AddSingleton(new UnitOfWorkTypeRegistery())
@@ -27,6 +29,7 @@ public static class Extensions
 
         services.Decorate(typeof(ICommandHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<>), typeof(ValidatorCommandHandlerDecorator<>));
+        services.Decorate(typeof(ICommandHandler<>), typeof(LoggingCommandHandlerDecorator<>));
 
         return services;
     }
