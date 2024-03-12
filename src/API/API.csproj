@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj" />
+    <ProjectReference Include="..\Modules\Reservations\Reservations.Core\Reservations.Core.csproj" />
     <ProjectReference Include="..\Modules\Staff\Staff.Core\Staff.Core.csproj" />
   </ItemGroup>
 
