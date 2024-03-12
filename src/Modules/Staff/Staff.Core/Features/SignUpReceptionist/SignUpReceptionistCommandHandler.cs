@@ -1,6 +1,8 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Staff.Contracts;
 using Staff.Core.Domain.Entities;
 using Staff.Core.Domain.Exceptions;
 using Staff.Core.Domain.Repositories;
@@ -16,14 +18,16 @@ internal class SignUpReceptionistCommandHandler : ICommandHandler<SignUpReceptio
     private readonly StaffDbContext _staffDbContext;
     private readonly IEmployeeRepository _employeeRepository;
     private readonly ILogger<SignUpReceptionistCommandHandler> _logger;
+    private readonly IBus _bus;
 
     public SignUpReceptionistCommandHandler(IPasswordManager passwordManager, StaffDbContext staffDbContext, IEmployeeRepository employeeRepository,
-        ILogger<SignUpReceptionistCommandHandler> logger)
+        ILogger<SignUpReceptionistCommandHandler> logger, IBus bus)
     {
         _passwordManager = passwordManager;
         _staffDbContext = staffDbContext;
         _employeeRepository = employeeRepository;
         _logger = logger;
+        _bus = bus;
     }
 
     public async Task HandleAsync(SignUpReceptionistCommand command, CancellationToken cancellationToken = default)
@@ -35,5 +39,6 @@ internal class SignUpReceptionistCommandHandler : ICommandHandler<SignUpReceptio
             .CreateReceptionist(command.FirstName, command.LastName, command.Email, command.PhoneNumber, command.Password, _passwordManager);
         await _employeeRepository.AddEmployeeAsync(receptionist,cancellationToken);
         _logger.LogInformation("Create a receptionist with id: {id}", receptionist.Id);
+        await _bus.Publish(new ReceptionistCreated(receptionist.Id, $"{receptionist.FirstName}, {receptionist.LastName}", receptionist.Email), cancellationToken);
     }
 }

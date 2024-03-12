@@ -1,3 +1,4 @@
+using Api;
 using BuildingBlocks;
 using BuildingBlocks.Modules;
 
@@ -7,6 +8,7 @@ var configuration = builder.Configuration;
 
 services
     .AddBuildingBlocksServices()
+    .AddMessageBroker()
     .RegisterModulesServices(configuration);
 
 
