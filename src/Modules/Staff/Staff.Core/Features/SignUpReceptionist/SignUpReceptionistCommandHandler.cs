@@ -39,6 +39,6 @@ internal class SignUpReceptionistCommandHandler : ICommandHandler<SignUpReceptio
             .CreateReceptionist(command.FirstName, command.LastName, command.Email, command.PhoneNumber, command.Password, _passwordManager);
         await _employeeRepository.AddEmployeeAsync(receptionist,cancellationToken);
         _logger.LogInformation("Create a receptionist with id: {id}", receptionist.Id);
-        await _bus.Publish(new ReceptionistCreated(receptionist.Id, $"{receptionist.FirstName}, {receptionist.LastName}", receptionist.Email), cancellationToken);
+        await _bus.Publish(new ReceptionistCreatedIntegrationEvent(receptionist.Id, $"{receptionist.FirstName}, {receptionist.LastName}", receptionist.Email), cancellationToken);
     }
 }

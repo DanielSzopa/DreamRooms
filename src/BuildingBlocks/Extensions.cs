@@ -1,5 +1,6 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
 using BuildingBlocks.Commands;
+using BuildingBlocks.Events;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Middlewares;
 using BuildingBlocks.UnitOfWork;
@@ -15,6 +16,7 @@ public static class Extensions
         return services
             .AddHttpContextAccessor()
             .AddExceptionHandler<GlobalExcepionsMiddleware>()
+            .AddDomainEvents()
             .AddCommandHandlers()
             .AddSingleton(new UnitOfWorkTypeRegistery())
             .AddSingleton<ICommandDispatcher, CommandDispatcher>();

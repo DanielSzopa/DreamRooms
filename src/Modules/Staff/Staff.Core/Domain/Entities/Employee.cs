@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Domain.Entities;
+using Staff.Core.Domain.Events;
 using Staff.Core.Domain.ValueObjects;
 using Staff.Core.Security;
 
@@ -23,6 +24,8 @@ public sealed class Employee : Entity, IAgregateRoot
         PhoneNumber = phoneNumber;
         Role = role;
         PasswordHash = passwordHash;
+
+        AddParticularDomainEvent(Id, FirstName, LastName, Email, Role);
     }
 
     internal static Employee CreateReceptionist(FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, Password password, IPasswordManager passwordManager)
@@ -39,5 +42,17 @@ public sealed class Employee : Entity, IAgregateRoot
     {
         var passwordHash = passwordManager.HashPassword(password);
         return new(Guid.NewGuid(), firstName, lastName, email, phoneNumber, role, passwordHash);
+    }
+
+    private void AddParticularDomainEvent(Guid Id, string FirstName, string LastName, string Email, Role role)
+    {
+        if (role == Role.Receptionist)
+        {
+            this.AddDomainEvent(new ReceptionistCreated(Id, $"{FirstName} {LastName}", Email));
+        }
+        else if(role == Role.RoomServicer)
+        {
+            //later
+        }
     }
 }
