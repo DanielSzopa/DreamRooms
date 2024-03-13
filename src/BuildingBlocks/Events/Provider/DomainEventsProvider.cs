@@ -3,7 +3,7 @@ using BuildingBlocks.Domain.Events.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace BuildingBlocks.Events.DomainEventsProvider;
+namespace BuildingBlocks.Events.Provider;
 public class DomainEventsProvider : IDomainEventsProvider
 {
     private readonly DbContext _dbContext;

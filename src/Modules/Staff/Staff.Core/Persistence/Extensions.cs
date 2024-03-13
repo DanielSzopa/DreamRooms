@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.UnitOfWork;
+﻿using BuildingBlocks.Persistence;
+using BuildingBlocks.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,7 @@ internal static class Extensions
     {
         return services
             .AddStaffDbContext(configuration)
+            .RegisterDbContextType<StaffDbContext>()
             .AddUnitOfWork<StaffUnitOfWork>()
             .AddRepositories();
     }

@@ -1,21 +1,27 @@
-﻿using BuildingBlocks.Events.DomainEventsProvider;
-using BuildingBlocks.Events.DomainEventsPublisher;
+﻿using BuildingBlocks.Events.Provider;
+using BuildingBlocks.Events.Publisher;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Events.Dispatcher;
 public class DomainEventsDispatcher : IDomainEventsDispatcher
 {
-    private readonly IDomainEventsProvider _domainEventsProvider;
     private readonly IDomainEventsPublisher _domainEventsPublisher;
+    private readonly IServiceProvider _serviceProvider;
 
-    public DomainEventsDispatcher(IDomainEventsProvider domainEventsProvider, IDomainEventsPublisher domainEventsPublisher)
+    public DomainEventsDispatcher(IDomainEventsPublisher domainEventsPublisher,
+        IServiceProvider serviceProvider)
     {
-        _domainEventsProvider = domainEventsProvider;
         _domainEventsPublisher = domainEventsPublisher;
+        _serviceProvider = serviceProvider;
     }
 
-    public async Task DispatchAsync(CancellationToken cancellationToken = default)
+    public async Task DispatchAsync(Type dbContextType, CancellationToken cancellationToken = default)
     {
-        var domainEvents = _domainEventsProvider.GetAllDomainEvents();
+        var dbContext = (DbContext)_serviceProvider.GetRequiredService(dbContextType);
+        var domainEventsProvider = new DomainEventsProvider(dbContext);
+
+        var domainEvents = domainEventsProvider.GetAllDomainEvents();
         if (domainEvents is null || !domainEvents.Any())
             return;
 
@@ -27,7 +33,7 @@ public class DomainEventsDispatcher : IDomainEventsDispatcher
             resultTasks.AddRange(publishedTasks);
         }
 
-        _domainEventsProvider.ClearAllDomainEvents();
+        domainEventsProvider.ClearAllDomainEvents();
 
         await Task.WhenAll(resultTasks);
     }

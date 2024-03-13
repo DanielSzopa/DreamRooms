@@ -2,7 +2,7 @@
 using BuildingBlocks.Events.DomainEventsHandlers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BuildingBlocks.Events.DomainEventsPublisher;
+namespace BuildingBlocks.Events.Publisher;
 public class DomainEventsPublisher : IDomainEventsPublisher
 {
     private readonly IServiceProvider _serviceProvider;
@@ -17,7 +17,6 @@ public class DomainEventsPublisher : IDomainEventsPublisher
     {
         var tasks = new List<Task>();
 
-        using var scope = _serviceProvider.CreateAsyncScope();
         var handlers = _serviceProvider.GetServices(typeof(IDomainEventHandler<TEvent>));
 
         foreach (var handler in handlers)

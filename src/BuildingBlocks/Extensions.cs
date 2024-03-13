@@ -3,6 +3,7 @@ using BuildingBlocks.Commands;
 using BuildingBlocks.Events;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Middlewares;
+using BuildingBlocks.Persistence;
 using BuildingBlocks.UnitOfWork;
 using BuildingBlocks.Validators;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ public static class Extensions
             .AddDomainEvents()
             .AddCommandHandlers()
             .AddSingleton(new UnitOfWorkTypeRegistery())
+            .AddSingleton(new DbContextTypeRegistery())
             .AddSingleton<ICommandDispatcher, CommandDispatcher>();
     }
 
