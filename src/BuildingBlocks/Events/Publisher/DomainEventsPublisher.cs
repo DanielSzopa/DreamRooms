@@ -12,19 +12,15 @@ public class DomainEventsPublisher : IDomainEventsPublisher
         _serviceProvider = serviceProvider;
     }
 
-    public List<Task> PublishAsync<TEvent>(TEvent @event, CancellationToken cancellationToken)
+    public IEnumerable<Task> PublishAsync<TEvent>(TEvent @event, CancellationToken cancellationToken)
         where TEvent : class, IDomainEvent
     {
-        var tasks = new List<Task>();
+        var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(@event.GetType());
+        var handlers = _serviceProvider.GetServices(handlerType);
 
-        using var scope = _serviceProvider.CreateAsyncScope();
-        var handlers = scope.ServiceProvider.GetServices(typeof(IDomainEventHandler<TEvent>));
-
-        foreach (var handler in handlers)
-        {
-            var domainEventHandler = (IDomainEventHandler<TEvent>)handler;
-            tasks.Add(domainEventHandler.HandleAsync(@event, cancellationToken));
-        }
+        var tasks = handlers.Select(x => (Task) handlerType
+        .GetMethod(nameof(IDomainEventHandler<IDomainEvent>.HandleAsync))
+        ?.Invoke(x, new object[] { @event, cancellationToken }));
 
         return tasks;
     }
