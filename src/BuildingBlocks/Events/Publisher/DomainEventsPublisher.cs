@@ -17,7 +17,8 @@ public class DomainEventsPublisher : IDomainEventsPublisher
     {
         var tasks = new List<Task>();
 
-        var handlers = _serviceProvider.GetServices(typeof(IDomainEventHandler<TEvent>));
+        using var scope = _serviceProvider.CreateAsyncScope();
+        var handlers = scope.ServiceProvider.GetServices(typeof(IDomainEventHandler<TEvent>));
 
         foreach (var handler in handlers)
         {

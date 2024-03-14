@@ -11,7 +11,7 @@ internal static class Extensions
         services
             .AddDomainEventHandlers()
             .AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>()
-            .AddScoped<IDomainEventsPublisher,DomainEventsPublisher>();
+            .AddSingleton<IDomainEventsPublisher,DomainEventsPublisher>();
 
         return services;
     }
