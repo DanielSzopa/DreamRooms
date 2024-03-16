@@ -22,7 +22,9 @@ app.Run();
 
 
 //Todo:
-//Logs - Maybe first without serilog
-//New modules - Reservations, Room Service - Creating entity inside these modules also
-//Add context
+//Domain notifications
+//Outbox, inbox
+//Add CorellationId (Middleware), adding it to logs
+//New modules - Reservations, Room Service - Creating employee inside these modules also
+//Add context which help to keep tracibility between modules
 
