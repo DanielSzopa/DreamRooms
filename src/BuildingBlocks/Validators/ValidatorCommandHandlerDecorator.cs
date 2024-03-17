@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
+using BuildingBlocks.Context;
 using BuildingBlocks.Modules;
 using FluentValidation;
 using Humanizer;
@@ -12,15 +13,15 @@ public class ValidatorCommandHandlerDecorator<TCommand> : ICommandHandler<TComma
     private readonly ICommandHandler<TCommand> _commandHandler;
     private readonly IValidator<TCommand> _validator;
     private readonly ILogger<ValidatorCommandHandlerDecorator<TCommand>> _logger;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IContextAccessor _context;
 
     public ValidatorCommandHandlerDecorator(ICommandHandler<TCommand> commandHandler, IValidator<TCommand> validator,
-        ILogger<ValidatorCommandHandlerDecorator<TCommand>> logger, IHttpContextAccessor httpContextAccessor)
+        ILogger<ValidatorCommandHandlerDecorator<TCommand>> logger, IContextAccessor context)
     {
         _commandHandler = commandHandler;
         _validator = validator;
         _logger = logger;
-        _httpContextAccessor = httpContextAccessor;
+        _context = context;
     }
 
     public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
@@ -32,11 +33,12 @@ public class ValidatorCommandHandlerDecorator<TCommand> : ICommandHandler<TComma
 
         var module = command.GetModuleName();
         var name = command.GetType().Name.Underscore();
-        var traceId = _httpContextAccessor.HttpContext.TraceIdentifier;
+        var traceId = _context.TraceId;
+        var correlationId = _context.CorrelationId;
 
-        _logger.LogInformation("Validating a command {name} [Module: {module}, TraceId: {traceId}]", name, module, traceId);
+        _logger.LogInformation("Validating a command {name} [Module: {module}, TraceId: {traceId}, CorrelationId: {correlationId}]", name, module, traceId, correlationId);
         _validator.ValidateAndThrow(command);
-        _logger.LogInformation("Validation a command {name} passed [Module: {module}, TraceId: {traceId}]", name, module, traceId);
+        _logger.LogInformation("Validation a command {name} passed [Module: {module}, TraceId: {traceId}, CorrelationId: {correlationId}]", name, module, traceId, correlationId);
 
         await _commandHandler.HandleAsync(command, cancellationToken);
     }

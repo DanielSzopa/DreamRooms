@@ -14,7 +14,7 @@ public class ReceptionistCreatedEventHandler : IConsumer<ReceptionistCreatedInte
 
     public Task Consume(ConsumeContext<ReceptionistCreatedIntegrationEvent> context)
     {
-        _logger.LogInformation($"Receptionist created consumed {context.Message.Id} {context.Message.FullName} {context.Message.Email}");
+        _logger.LogInformation($"Receptionist created consumed {context.Message.Id} {context.Message.FullName} {context.Message.Email} {context.CorrelationId}");
         return Task.CompletedTask;
     }
 }

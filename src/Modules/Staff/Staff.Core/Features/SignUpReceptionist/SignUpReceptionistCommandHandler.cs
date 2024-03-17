@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
+using BuildingBlocks.Context;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -19,15 +20,17 @@ internal class SignUpReceptionistCommandHandler : ICommandHandler<SignUpReceptio
     private readonly IEmployeeRepository _employeeRepository;
     private readonly ILogger<SignUpReceptionistCommandHandler> _logger;
     private readonly IBus _bus;
+    private readonly IContextAccessor _context;
 
     public SignUpReceptionistCommandHandler(IPasswordManager passwordManager, StaffDbContext staffDbContext, IEmployeeRepository employeeRepository,
-        ILogger<SignUpReceptionistCommandHandler> logger, IBus bus)
+        ILogger<SignUpReceptionistCommandHandler> logger, IBus bus, IContextAccessor context)
     {
         _passwordManager = passwordManager;
         _staffDbContext = staffDbContext;
         _employeeRepository = employeeRepository;
         _logger = logger;
         _bus = bus;
+        _context = context;
     }
 
     public async Task HandleAsync(SignUpReceptionistCommand command, CancellationToken cancellationToken = default)
@@ -39,6 +42,7 @@ internal class SignUpReceptionistCommandHandler : ICommandHandler<SignUpReceptio
             .CreateReceptionist(command.FirstName, command.LastName, command.Email, command.PhoneNumber, command.Password, _passwordManager);
         await _employeeRepository.AddEmployeeAsync(receptionist,cancellationToken);
         _logger.LogInformation("Create a receptionist with id: {id}", receptionist.Id);
-        await _bus.Publish(new ReceptionistCreatedIntegrationEvent(receptionist.Id, $"{receptionist.FirstName}, {receptionist.LastName}", receptionist.Email), cancellationToken);
+        var @event = new ReceptionistCreatedIntegrationEvent(receptionist.Id, $"{receptionist.FirstName}, {receptionist.LastName}", receptionist.Email);
+        await _bus.Publish(@event, c=> c.CorrelationId = _context.CorrelationId, cancellationToken);
     }
 }

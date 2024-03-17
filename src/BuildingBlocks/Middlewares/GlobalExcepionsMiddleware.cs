@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.Exceptions;
+﻿using BuildingBlocks.Context;
+using BuildingBlocks.Exceptions;
 using BuildingBlocks.Middlewares.ProblemDetails;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
@@ -14,30 +15,33 @@ namespace BuildingBlocks.Middlewares;
 public class GlobalExcepionsMiddleware : IExceptionHandler
 {
     private readonly ILogger<GlobalExcepionsMiddleware> _logger;
+    private readonly IContextAccessor _context;
 
-    public GlobalExcepionsMiddleware(ILogger<GlobalExcepionsMiddleware> logger)
+    public GlobalExcepionsMiddleware(ILogger<GlobalExcepionsMiddleware> logger, IContextAccessor contextAccessor)
     {
         _logger = logger;
+        _context = contextAccessor;
     }
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        var traceId = httpContext?.TraceIdentifier;
+        var traceId = _context.TraceId;
+        var correlationId = _context.CorrelationId;
 
         GlobalExceptionHandlerParametersDto dto = default;
         switch (exception)
         {
             case ValidationException:
                 dto = HandleValidationException(httpContext.Request, (ValidationException)exception);
-                _logger.LogError(exception, "Validation failed [TraceId: {traceId}]",traceId);
+                _logger.LogError(exception, "Validation failed [TraceId: {traceId}, CorrelationId: {correlationId}]", traceId, correlationId);
                 break;
             case DreamRoomsException:
                 dto = HandleDreamRoomsException(traceId, (DreamRoomsException)exception);
-                _logger.LogError(exception, "{message} [TraceId: {traceId}]", exception.Message, traceId);
+                _logger.LogError(exception, "{message} [TraceId: {traceId}, CorrelationId: {correlationId}]", exception.Message, traceId, correlationId);
                 break;
             default:
                 dto = HandleInternalServerError(httpContext);
-                _logger.LogError(exception, "{message} [TraceId: {traceId}]", exception.Message, traceId);
+                _logger.LogError(exception, "{message} [TraceId: {traceId}, CorrelationId: {correlationId}]", exception.Message, traceId, correlationId);
                 break;
         }
 

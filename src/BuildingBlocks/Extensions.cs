@@ -1,5 +1,6 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
 using BuildingBlocks.Commands;
+using BuildingBlocks.Context;
 using BuildingBlocks.Events;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Middlewares;
@@ -16,7 +17,9 @@ public static class Extensions
     {
         return services
             .AddHttpContextAccessor()
+            .AddSingleton<IContextAccessor, ContextAccessor>()
             .AddExceptionHandler<GlobalExcepionsMiddleware>()
+            .AddSingleton<CorrelationMiddleware>()
             .AddDomainEvents()
             .AddCommandHandlers()
             .AddSingleton(new UnitOfWorkTypeRegistery())
