@@ -1,6 +1,6 @@
 ﻿using BuildingBlocks.Domain.Events.Abstractions;
 
-namespace BuildingBlocks.Events.Provider;
+namespace BuildingBlocks.Events.Providers;
 public interface IDomainEventsProvider
 {
     IReadOnlyCollection<IDomainEvent> GetAllDomainEvents();

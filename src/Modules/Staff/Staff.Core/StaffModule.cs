@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Staff.Core.Domain.Events;
 using Staff.Core.Features.SignUpReceptionist;
 using Staff.Core.Persistence;
 using Staff.Core.Security;
@@ -23,6 +24,7 @@ public class StaffModule : IModule
         return services
             .AddValidatorsFromAssemblyContaining(typeof(StaffModule), includeInternalTypes: true)
             .AddSecurity()
-            .AddStaffPersistence(configuration);
+            .AddStaffPersistence(configuration)
+            .RegisterStaffDomainEventNotifications();
     }
 }

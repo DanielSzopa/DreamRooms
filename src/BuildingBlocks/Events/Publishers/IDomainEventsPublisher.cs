@@ -1,6 +1,6 @@
 ﻿using BuildingBlocks.Domain.Events.Abstractions;
 
-namespace BuildingBlocks.Events.Publisher;
+namespace BuildingBlocks.Events.Publishers;
 public interface IDomainEventsPublisher
 {
      IEnumerable<Task> PublishAsync<TEvent>(TEvent @event, CancellationToken cancellationToken = default) 

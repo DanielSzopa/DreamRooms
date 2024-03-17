@@ -1,6 +1,9 @@
-﻿using BuildingBlocks.Events.Dispatcher;
+﻿using BuildingBlocks.Domain.Events.Abstractions;
+using BuildingBlocks.Events.Dispatcher;
+using BuildingBlocks.Events.DomainEventNotificationHandlers;
 using BuildingBlocks.Events.DomainEventsHandlers;
-using BuildingBlocks.Events.Publisher;
+using BuildingBlocks.Events.NotificationsRegistery;
+using BuildingBlocks.Events.Publishers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Events;
@@ -10,8 +13,10 @@ internal static class Extensions
     {
         services
             .AddDomainEventHandlers()
+            .AddDomainEventNotificationHandlers()
             .AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>()
-            .AddScoped<IDomainEventsPublisher,DomainEventsPublisher>();
+            .AddScoped<IDomainEventsPublisher,DomainEventsPublisher>()
+            .AddSingleton(new DomainEventNotificationsRegistery());
 
         return services;
     }
@@ -20,6 +25,16 @@ internal static class Extensions
     {
         services.Scan(s => s.FromApplicationDependencies()
         .AddClasses(c => c.AssignableTo(typeof(IDomainEventHandler<>)))
+        .AsImplementedInterfaces()
+        .WithScopedLifetime());
+
+        return services;
+    }
+
+    private static IServiceCollection AddDomainEventNotificationHandlers(this IServiceCollection services)
+    {
+        services.Scan(s => s.FromApplicationDependencies()
+        .AddClasses(c => c.AssignableTo(typeof(IDomainEventNotificationHandler<>)))
         .AsImplementedInterfaces()
         .WithScopedLifetime());
 

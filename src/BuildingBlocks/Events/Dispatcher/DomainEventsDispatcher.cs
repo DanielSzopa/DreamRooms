@@ -1,5 +1,7 @@
-﻿using BuildingBlocks.Events.Provider;
-using BuildingBlocks.Events.Publisher;
+﻿using BuildingBlocks.Events.DomainEventNotificationHandlers;
+using BuildingBlocks.Events.NotificationsRegistery;
+using BuildingBlocks.Events.Providers;
+using BuildingBlocks.Events.Publishers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,12 +10,14 @@ public class DomainEventsDispatcher : IDomainEventsDispatcher
 {
     private readonly IDomainEventsPublisher _domainEventsPublisher;
     private readonly IServiceProvider _serviceProvider;
+    private readonly DomainEventNotificationsRegistery _domainEventNotificationsRegistery;
 
     public DomainEventsDispatcher(IDomainEventsPublisher domainEventsPublisher,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider, DomainEventNotificationsRegistery domainEventNotificationsRegistery)
     {
         _domainEventsPublisher = domainEventsPublisher;
         _serviceProvider = serviceProvider;
+        _domainEventNotificationsRegistery = domainEventNotificationsRegistery;
     }
 
     public async Task DispatchAsync(Type dbContextType, CancellationToken cancellationToken = default)
@@ -29,6 +33,12 @@ public class DomainEventsDispatcher : IDomainEventsDispatcher
 
         foreach (var domainEvent in domainEvents)
         {
+            var domainEventType = domainEvent.GetType();
+            var domainEventNotificationType = _domainEventNotificationsRegistery.Resolve(domainEventType);
+
+            var notificationHandlerType = typeof(IDomainEventNotificationHandler<>).MakeGenericType(domainEventNotificationType);
+            var notificationHandlers = _serviceProvider.GetServices(notificationHandlerType);
+
             var publishedTasks = _domainEventsPublisher.PublishAsync(domainEvent, cancellationToken);
             resultTasks.AddRange(publishedTasks);
         }
