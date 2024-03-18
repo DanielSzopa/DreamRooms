@@ -42,7 +42,7 @@ internal class SignUpReceptionistCommandHandler : ICommandHandler<SignUpReceptio
             .CreateReceptionist(command.FirstName, command.LastName, command.Email, command.PhoneNumber, command.Password, _passwordManager);
         await _employeeRepository.AddEmployeeAsync(receptionist,cancellationToken);
         _logger.LogInformation("Create a receptionist with id: {id}", receptionist.Id);
-        var @event = new ReceptionistCreatedIntegrationEvent(receptionist.Id, $"{receptionist.FirstName}, {receptionist.LastName}", receptionist.Email);
+        var @event = new ReceptionistCreatedIntegrationEvent(receptionist.Id.Value, $"{receptionist.FirstName.Value}, {receptionist.LastName.Value}", receptionist.Email.Value);
         await _bus.Publish(@event, c=> c.CorrelationId = _context.CorrelationId, cancellationToken);
     }
 }

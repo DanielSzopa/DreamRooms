@@ -2,11 +2,11 @@
 
 namespace Staff.Core.Domain.ValueObjects;
 
-public record Password
+internal record Password
 {
-    public string Value { get; }
+    internal string Value { get; }
 
-    public Password(string password)
+    internal Password(string password)
     {
         if (string.IsNullOrWhiteSpace(password) ||
             password.Length < 8 || password.Length > 20)

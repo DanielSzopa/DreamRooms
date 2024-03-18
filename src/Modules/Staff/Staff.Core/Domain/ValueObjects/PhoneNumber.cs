@@ -3,11 +3,11 @@ using System.Text.RegularExpressions;
 
 namespace Staff.Core.Domain.ValueObjects;
 
-public record PhoneNumber
+internal record PhoneNumber
 {
-    public string Value { get; }
+    internal string Value { get; }
 
-    public PhoneNumber(string phoneNumber)
+    internal PhoneNumber(string phoneNumber)
     {
         var regex = new Regex(@"^(\+\d{2}\s?)?\d{3}\s?\d{3}\s?\d{3}$");
 

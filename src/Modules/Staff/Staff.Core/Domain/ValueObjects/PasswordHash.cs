@@ -2,11 +2,11 @@
 
 namespace Staff.Core.Domain.ValueObjects;
 
-public record PasswordHash
+internal record PasswordHash
 {
-    public string Value { get; }
+    internal string Value { get; }
 
-    public PasswordHash(string passwordHash)
+    internal PasswordHash(string passwordHash)
     {
         if (string.IsNullOrWhiteSpace(passwordHash))
             throw new InvalidPasswordHashException();

@@ -3,11 +3,11 @@ using System.Text.RegularExpressions;
 
 namespace Staff.Core.Domain.ValueObjects;
 
-public record Email
+internal record Email
 {
-    public string Value { get; }
+    internal string Value { get; }
 
-    public Email(string email)
+    internal Email(string email)
     {
         var regex = new Regex(@"^[a-z0-9]+\.?[a-z0-9]+@[a-z]+\.[a-z]{2,3}$", RegexOptions.IgnoreCase);
 

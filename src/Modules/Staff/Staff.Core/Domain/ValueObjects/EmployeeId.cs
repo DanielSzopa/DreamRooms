@@ -2,9 +2,9 @@
 
 namespace Staff.Core.Domain.ValueObjects;
 
-public record EmployeeId : TypedIdValueBase
+internal record EmployeeId : TypedIdValueBase
 {
-    public EmployeeId(Guid id) : base(id)
+    internal EmployeeId(Guid id) : base(id)
     {
     }
 

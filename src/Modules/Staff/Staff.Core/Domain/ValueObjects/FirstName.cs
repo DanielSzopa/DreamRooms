@@ -2,11 +2,11 @@
 
 namespace Staff.Core.Domain.ValueObjects;
 
-public sealed record FirstName
+internal sealed record FirstName
 {
-    public string Value { get; }
+    internal string Value { get; }
 
-    public FirstName(string value)
+    internal FirstName(string value)
     {
         if (string.IsNullOrWhiteSpace(value) || value.Length < 2)
             throw new InvalidFirstNameException(value);

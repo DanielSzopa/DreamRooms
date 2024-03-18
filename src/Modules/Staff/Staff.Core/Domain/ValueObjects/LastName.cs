@@ -2,11 +2,11 @@
 
 namespace Staff.Core.Domain.ValueObjects;
 
-public record LastName
+internal record LastName
 {
-    public string Value { get; }
+    internal string Value { get; }
 
-    public LastName(string lastName)
+    internal LastName(string lastName)
     {
         if (string.IsNullOrWhiteSpace(lastName) || lastName.Length < 2)
             throw new InvalidLastNameException(lastName);

@@ -5,15 +5,15 @@ using Staff.Core.Security;
 
 namespace Staff.Core.Domain.Entities;
 
-public sealed class Employee : Entity, IAgregateRoot
+internal sealed class Employee : Entity, IAgregateRoot
 {
-    public EmployeeId Id { get; private set; }
-    public FirstName FirstName { get; private set; }
-    public LastName LastName { get; private set; }
-    public Email Email { get; private set; }
-    public PasswordHash PasswordHash { get; private set; }
-    public PhoneNumber PhoneNumber { get; private set; }
-    public Role Role { get; private set; }
+    internal EmployeeId Id { get; private set; }
+    internal FirstName FirstName { get; private set; }
+    internal LastName LastName { get; private set; }
+    internal Email Email { get; private set; }
+    internal PasswordHash PasswordHash { get; private set; }
+    internal PhoneNumber PhoneNumber { get; private set; }
+    internal Role Role { get; private set; }
 
     private Employee(EmployeeId id, FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber, Role role, PasswordHash passwordHash)
     {
