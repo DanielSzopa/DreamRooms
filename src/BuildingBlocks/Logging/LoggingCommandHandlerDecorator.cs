@@ -5,7 +5,7 @@ using Humanizer;
 using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.Logging;
-public class LoggingCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
+internal class LoggingCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
     where TCommand : class, ICommand
 {
     private readonly ICommandHandler<TCommand> _decoratedCommandHandler;

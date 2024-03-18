@@ -3,11 +3,10 @@ using BuildingBlocks.Context;
 using BuildingBlocks.Modules;
 using FluentValidation;
 using Humanizer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.Validators;
-public class ValidatorCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
+internal class ValidatorCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
     where TCommand : class, ICommand
 {
     private readonly ICommandHandler<TCommand> _commandHandler;

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BuildingBlocks.Events.Providers;
-public class DomainEventsProvider : IDomainEventsProvider
+internal class DomainEventsProvider : IDomainEventsProvider
 {
     private readonly DbContext _dbContext;
 

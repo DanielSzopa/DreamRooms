@@ -17,7 +17,7 @@ var app = builder.Build();
 
 
 app.UseHttpsRedirection();
-app.UseMiddleware<CorrelationMiddleware>();
+app.UseCorrelationMiddleware();
 app.UseExceptionHandler(x => { });
 app.ExposeModulesEndpoints();
 

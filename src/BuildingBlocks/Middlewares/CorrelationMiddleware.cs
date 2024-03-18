@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 
 namespace BuildingBlocks.Middlewares;
-public class CorrelationMiddleware : IMiddleware
+internal class CorrelationMiddleware : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {

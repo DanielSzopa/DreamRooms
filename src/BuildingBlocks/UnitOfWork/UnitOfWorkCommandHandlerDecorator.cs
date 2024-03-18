@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.UnitOfWork;
 
-public class UnitOfWorkCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
+internal class UnitOfWorkCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
     where TCommand : class, ICommand
 {
     private readonly ICommandHandler<TCommand> _decoratedCommandHandler;

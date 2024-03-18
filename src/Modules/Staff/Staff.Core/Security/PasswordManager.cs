@@ -3,7 +3,7 @@ using Staff.Core.Domain.Entities;
 
 namespace Staff.Core.Security;
 
-public class PasswordManager : IPasswordManager
+internal class PasswordManager : IPasswordManager
 {
     private readonly IPasswordHasher<Employee> _passwordHasher;
 

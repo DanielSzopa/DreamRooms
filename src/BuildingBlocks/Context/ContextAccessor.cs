@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 
 namespace BuildingBlocks.Context;
-public class ContextAccessor : IContextAccessor
+internal class ContextAccessor : IContextAccessor
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 

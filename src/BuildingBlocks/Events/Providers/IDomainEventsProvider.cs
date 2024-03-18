@@ -1,7 +1,7 @@
 ﻿using BuildingBlocks.Events.Basics;
 
 namespace BuildingBlocks.Events.Providers;
-public interface IDomainEventsProvider
+internal interface IDomainEventsProvider
 {
     IReadOnlyCollection<IDomainEvent> GetAllDomainEvents();
 

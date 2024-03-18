@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Events.Dispatcher;
-public class DomainEventsDispatcher : IDomainEventsDispatcher
+internal class DomainEventsDispatcher : IDomainEventsDispatcher
 {
     private readonly IDomainEventsPublisher _domainEventsPublisher;
     private readonly IServiceProvider _serviceProvider;

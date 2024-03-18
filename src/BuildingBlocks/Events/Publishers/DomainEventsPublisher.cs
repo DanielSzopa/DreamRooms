@@ -3,7 +3,7 @@ using BuildingBlocks.Events.DomainEventsHandlers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Events.Publishers;
-public class DomainEventsPublisher : IDomainEventsPublisher
+internal class DomainEventsPublisher : IDomainEventsPublisher
 {
     private readonly IServiceProvider _serviceProvider;
 

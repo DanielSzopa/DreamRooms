@@ -12,7 +12,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 
 namespace BuildingBlocks.Middlewares;
-public class GlobalExcepionsMiddleware : IExceptionHandler
+internal class GlobalExcepionsMiddleware : IExceptionHandler
 {
     private readonly ILogger<GlobalExcepionsMiddleware> _logger;
     private readonly IContextAccessor _context;

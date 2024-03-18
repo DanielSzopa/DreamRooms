@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Commands;
 
-public class CommandDispatcher : ICommandDispatcher
+internal class CommandDispatcher : ICommandDispatcher
 {
     private readonly IServiceProvider _serviceProvider;
 
