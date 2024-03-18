@@ -1,5 +1,4 @@
-﻿using BuildingBlocks.Domain.Events.Abstractions;
-using BuildingBlocks.Events.Dispatcher;
+﻿using BuildingBlocks.Events.Dispatcher;
 using BuildingBlocks.Events.DomainEventNotificationHandlers;
 using BuildingBlocks.Events.DomainEventsHandlers;
 using BuildingBlocks.Events.NotificationsRegistery;

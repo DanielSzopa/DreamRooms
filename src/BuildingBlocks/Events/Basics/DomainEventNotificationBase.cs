@@ -1,6 +1,4 @@
-﻿using BuildingBlocks.Domain.Events.Abstractions;
-
-namespace BuildingBlocks.Domain.Events;
+﻿namespace BuildingBlocks.Events.Basics;
 public abstract record DomainEventNotificationBase<TEvent> : IDomainEventNotification<TEvent>
     where TEvent : class, IDomainEvent
 {

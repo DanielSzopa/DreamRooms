@@ -1,5 +1,4 @@
-﻿using BuildingBlocks.Abstractions.Modules;
-using Reservations.Core;
+﻿using Reservations.Core;
 using Staff.Core;
 using System.Reflection;
 

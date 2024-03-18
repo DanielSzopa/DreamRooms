@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BuildingBlocks.Abstractions.Modules;
+namespace BuildingBlocks.Modules;
 
 public interface IModule
 {

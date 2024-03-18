@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Domain.Events.Abstractions;
+﻿using BuildingBlocks.Events.Basics;
 using BuildingBlocks.Events.DomainEventsHandlers;
 using Microsoft.Extensions.DependencyInjection;
 

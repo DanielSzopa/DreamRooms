@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Domain.Events.Abstractions;
+﻿namespace BuildingBlocks.Events.Basics;
 public interface IDomainEvent
 {
     Guid EventId { get; }

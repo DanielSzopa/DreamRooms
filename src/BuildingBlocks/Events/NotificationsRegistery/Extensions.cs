@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Domain.Events.Abstractions;
+﻿using BuildingBlocks.Events.Basics;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Events.NotificationsRegistery;

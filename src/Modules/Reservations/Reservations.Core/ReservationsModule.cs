@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Abstractions.Modules;
+﻿using BuildingBlocks.Modules;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

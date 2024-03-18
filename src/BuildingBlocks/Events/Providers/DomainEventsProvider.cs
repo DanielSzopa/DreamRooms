@@ -1,5 +1,5 @@
 ﻿using BuildingBlocks.Domain.Entities;
-using BuildingBlocks.Domain.Events.Abstractions;
+using BuildingBlocks.Events.Basics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 

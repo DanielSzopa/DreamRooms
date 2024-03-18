@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Domain.Events.Abstractions;
+﻿using BuildingBlocks.Events.Basics;
 
 namespace BuildingBlocks.Events.Providers;
 public interface IDomainEventsProvider

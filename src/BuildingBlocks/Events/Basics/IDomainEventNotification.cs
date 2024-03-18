@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Domain.Events.Abstractions;
+﻿namespace BuildingBlocks.Events.Basics;
 public interface IDomainEventNotification<out TEvent>
     where TEvent : class, IDomainEvent
 {
