@@ -14,6 +14,7 @@ internal class DomainEventNotificationsRegistery
 
     internal Type Resolve(Type domainEventType)
     {
-        return DomainEventsMapper[domainEventType];
+        var result = DomainEventsMapper.TryGetValue(domainEventType, out var domainEventNotification);
+        return result ? domainEventNotification : null;
     }
 }
