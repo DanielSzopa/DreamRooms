@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.Events.DomainEventNotificationHandlers;
+﻿using BuildingBlocks.Events.Basics;
+using BuildingBlocks.Events.NotificationsCreator;
 using BuildingBlocks.Events.NotificationsRegistery;
 using BuildingBlocks.Events.Providers;
 using BuildingBlocks.Events.Publishers;
@@ -9,13 +10,15 @@ namespace BuildingBlocks.Events.Dispatcher;
 internal class DomainEventsDispatcher : IDomainEventsDispatcher
 {
     private readonly IDomainEventsPublisher _domainEventsPublisher;
+    private readonly IDomainEventNotificationsCreator _domainEventNotificationsCreator;
     private readonly IServiceProvider _serviceProvider;
     private readonly DomainEventNotificationsRegistery _domainEventNotificationsRegistery;
 
-    public DomainEventsDispatcher(IDomainEventsPublisher domainEventsPublisher,
+    public DomainEventsDispatcher(IDomainEventsPublisher domainEventsPublisher, IDomainEventNotificationsCreator domainEventNotificationsCreator,
         IServiceProvider serviceProvider, DomainEventNotificationsRegistery domainEventNotificationsRegistery)
     {
         _domainEventsPublisher = domainEventsPublisher;
+        _domainEventNotificationsCreator = domainEventNotificationsCreator;
         _serviceProvider = serviceProvider;
         _domainEventNotificationsRegistery = domainEventNotificationsRegistery;
     }
@@ -29,22 +32,24 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
         if (domainEvents is null || !domainEvents.Any())
             return;
 
-        List<Task> resultTasks = new List<Task>();
+        List<Task> domainEventHandlingTasks = new List<Task>();
+        List<IDomainEventNotification<IDomainEvent>> domainEventNotifications = new ();
 
         foreach (var domainEvent in domainEvents)
         {
             var domainEventType = domainEvent.GetType();
             var domainEventNotificationType = _domainEventNotificationsRegistery.Resolve(domainEventType);
+            if(domainEventNotificationType is not null)
+            {
+                domainEventNotifications.Add(_domainEventNotificationsCreator.Create(domainEventNotificationType, domainEvent));
+            }
 
-            var notificationHandlerType = typeof(IDomainEventNotificationHandler<>).MakeGenericType(domainEventNotificationType);
-            var notificationHandlers = _serviceProvider.GetServices(notificationHandlerType);
-
-            var publishedTasks = _domainEventsPublisher.PublishAsync(domainEvent, cancellationToken);
-            resultTasks.AddRange(publishedTasks);
+            var handlingTasks = _domainEventsPublisher.PublishAsync(domainEvent, cancellationToken);
+            domainEventHandlingTasks.AddRange(handlingTasks);
         }
 
         domainEventsProvider.ClearAllDomainEvents();
 
-        await Task.WhenAll(resultTasks);
+        await Task.WhenAll(domainEventHandlingTasks);
     }
 }

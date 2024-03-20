@@ -1,6 +1,7 @@
 ﻿using BuildingBlocks.Events.Dispatcher;
 using BuildingBlocks.Events.DomainEventNotificationHandlers;
 using BuildingBlocks.Events.DomainEventsHandlers;
+using BuildingBlocks.Events.NotificationsCreator;
 using BuildingBlocks.Events.NotificationsRegistery;
 using BuildingBlocks.Events.Publishers;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,7 @@ internal static class Extensions
         services
             .AddDomainEventHandlers()
             .AddDomainEventNotificationHandlers()
+            .AddSingleton<IDomainEventNotificationsCreator, DomainEventNotificationsCreator>()
             .AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>()
             .AddScoped<IDomainEventsPublisher,DomainEventsPublisher>()
             .AddSingleton(new DomainEventNotificationsRegistery());

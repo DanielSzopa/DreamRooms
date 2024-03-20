@@ -18,6 +18,9 @@ internal class DomainEventsPublisher : IDomainEventsPublisher
         var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(@event.GetType());
         var handlers = _serviceProvider.GetServices(handlerType);
 
+        if(handlers.Count() == 0)
+            return Enumerable.Empty<Task>();
+
         var tasks = handlers.Select(x => (Task) handlerType
         .GetMethod(nameof(IDomainEventHandler<IDomainEvent>.HandleAsync))
         ?.Invoke(x, new object[] { @event, cancellationToken }));
