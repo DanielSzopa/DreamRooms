@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BuildingBlocks.Messaging.Outbox;
+using Microsoft.EntityFrameworkCore;
 using Staff.Core.Domain.Entities;
 
 namespace Staff.Core.Persistence;
@@ -6,6 +7,7 @@ namespace Staff.Core.Persistence;
 internal class StaffDbContext : DbContext
 {
     public DbSet<Employee> Employees { get; set; }
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
     public StaffDbContext(DbContextOptions<StaffDbContext> options) : base(options)
     {
         
