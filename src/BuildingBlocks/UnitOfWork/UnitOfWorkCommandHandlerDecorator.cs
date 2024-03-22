@@ -1,10 +1,12 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
 using BuildingBlocks.Events.Dispatcher;
+using BuildingBlocks.Helpers.Decorators;
 using BuildingBlocks.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.UnitOfWork;
 
+[Decorator]
 internal class UnitOfWorkCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
     where TCommand : class, ICommand
 {

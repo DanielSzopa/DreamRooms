@@ -1,10 +1,13 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
 using BuildingBlocks.Context;
+using BuildingBlocks.Helpers.Decorators;
 using BuildingBlocks.Modules;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.Logging;
+
+[Decorator]
 internal class LoggingCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
     where TCommand : class, ICommand
 {

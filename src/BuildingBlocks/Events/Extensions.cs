@@ -4,6 +4,8 @@ using BuildingBlocks.Events.DomainEventsHandlers;
 using BuildingBlocks.Events.NotificationsCreator;
 using BuildingBlocks.Events.NotificationsRegistery;
 using BuildingBlocks.Events.Publishers;
+using BuildingBlocks.Helpers.Decorators;
+using BuildingBlocks.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Events;
@@ -25,9 +27,12 @@ internal static class Extensions
     private static IServiceCollection AddDomainEventHandlers(this IServiceCollection services)
     {
         services.Scan(s => s.FromApplicationDependencies()
-        .AddClasses(c => c.AssignableTo(typeof(IDomainEventHandler<>)))
+        .AddClasses(c => c.AssignableTo(typeof(IDomainEventHandler<>))
+        .WithoutAttribute<DecoratorAttribute>())
         .AsImplementedInterfaces()
         .WithScopedLifetime());
+
+        services.Decorate(typeof(IDomainEventHandler<>), typeof(LoggingDomainEventHandlerDecorator<>));
 
         return services;
     }

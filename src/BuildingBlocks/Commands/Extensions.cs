@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
+using BuildingBlocks.Helpers.Decorators;
 using BuildingBlocks.Logging;
 using BuildingBlocks.UnitOfWork;
 using BuildingBlocks.Validators;
@@ -12,7 +13,8 @@ internal static class Extensions
         services.AddSingleton<ICommandDispatcher, CommandDispatcher>();
 
         services.Scan(scan => scan.FromApplicationDependencies()
-        .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<>)))
+        .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<>))
+        .WithoutAttribute<DecoratorAttribute>())
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 
