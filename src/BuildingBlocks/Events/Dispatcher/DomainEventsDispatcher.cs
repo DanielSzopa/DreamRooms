@@ -4,6 +4,7 @@ using BuildingBlocks.Events.NotificationsCreator;
 using BuildingBlocks.Events.NotificationsRegistery;
 using BuildingBlocks.Events.Providers;
 using BuildingBlocks.Events.Publishers;
+using BuildingBlocks.Helpers.Clock;
 using BuildingBlocks.Messaging.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,15 +18,18 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
     private readonly IServiceProvider _serviceProvider;
     private readonly DomainEventNotificationsRegistery _domainEventNotificationsRegistery;
     private readonly IContextAccessor _contextAccessor;
+    private readonly IClock _clock;
 
     public DomainEventsDispatcher(IDomainEventsPublisher domainEventsPublisher, IDomainEventNotificationsCreator domainEventNotificationsCreator,
-        IServiceProvider serviceProvider, DomainEventNotificationsRegistery domainEventNotificationsRegistery, IContextAccessor contextAccessor)
+        IServiceProvider serviceProvider, DomainEventNotificationsRegistery domainEventNotificationsRegistery, IContextAccessor contextAccessor,
+        IClock clock)
     {
         _domainEventsPublisher = domainEventsPublisher;
         _domainEventNotificationsCreator = domainEventNotificationsCreator;
         _serviceProvider = serviceProvider;
         _domainEventNotificationsRegistery = domainEventNotificationsRegistery;
         _contextAccessor = contextAccessor;
+        _clock = clock;
     }
 
     public async Task DispatchAsync(Type dbContextType, CancellationToken cancellationToken = default)
@@ -55,8 +59,6 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
 
         domainEventsProvider.ClearAllDomainEvents();
 
-        var outBoxDbSet = dbContext.Set<OutboxMessage>();
-
         var outBoxMessages = domainEventNotifications.Select(d => new OutboxMessage()
         {
             Id = d.EventId,
@@ -64,11 +66,12 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
             TraceId = _contextAccessor.TraceId,
             Name = nameof(IDomainEventNotification<IDomainEvent>),
             Type = d.GetType().ToString(),
-            CreatedAt = DateTime.Now,
+            CreatedAt = _clock.Now,
             Data = JsonSerializer.Serialize(d)
         });
 
-        outBoxDbSet.AddRange(outBoxMessages);
+        var outBox = new OutBox(dbContext);
+        await outBox.SendAsync(outBoxMessages, cancellationToken);
 
         await Task.WhenAll(domainEventHandlingTasks);
     }

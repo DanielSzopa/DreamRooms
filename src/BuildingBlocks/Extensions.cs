@@ -1,6 +1,7 @@
 ﻿using BuildingBlocks.Commands;
 using BuildingBlocks.Context;
 using BuildingBlocks.Events;
+using BuildingBlocks.Helpers.Clock;
 using BuildingBlocks.Middlewares;
 using BuildingBlocks.Persistence;
 using BuildingBlocks.UnitOfWork;
@@ -20,6 +21,7 @@ public static class Extensions
             .AddDomainEvents()
             .AddCommands()
             .AddSingleton(new UnitOfWorkTypeRegistery())
-            .AddSingleton(new DbContextTypeRegistery());
+            .AddSingleton(new DbContextTypeRegistery())
+            .AddSingleton<IClock, Clock>();
     }
 }
