@@ -25,8 +25,8 @@ app.Run();
 
 
 //Todo:
-//Domain notifications
-//Outbox, inbox
+//Domain notifications outbox resolver
+//Structuring logging serilog
 //New modules - Reservations, Room Service - Creating employee inside these modules also
-//Add context which help to keep tracibility between modules
+//Share context between modules
 
