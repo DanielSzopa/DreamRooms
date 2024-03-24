@@ -2,6 +2,7 @@
 using BuildingBlocks.Context;
 using BuildingBlocks.Events;
 using BuildingBlocks.Helpers.Clock;
+using BuildingBlocks.Messaging;
 using BuildingBlocks.Middlewares;
 using BuildingBlocks.Persistence;
 using BuildingBlocks.UnitOfWork;

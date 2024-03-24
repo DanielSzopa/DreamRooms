@@ -10,6 +10,7 @@ var configuration = builder.Configuration;
 services
     .AddBuildingBlocksServices()
     .AddMessageBroker()
+    .AddMessagingJobs()
     .RegisterModulesServices(configuration);
 
 

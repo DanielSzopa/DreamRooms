@@ -6,6 +6,7 @@ using BuildingBlocks.Events.Providers;
 using BuildingBlocks.Events.Publishers;
 using BuildingBlocks.Helpers.Clock;
 using BuildingBlocks.Messaging.Outbox;
+using BuildingBlocks.Modules;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
@@ -66,6 +67,7 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
             TraceId = _contextAccessor.TraceId,
             Name = nameof(IDomainEventNotification<IDomainEvent>),
             Type = d.GetType().ToString(),
+            Module = d.GetModuleName(),
             CreatedAt = _clock.Now,
             Data = JsonSerializer.Serialize(d)
         });
