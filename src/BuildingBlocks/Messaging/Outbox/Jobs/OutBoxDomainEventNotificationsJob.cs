@@ -9,10 +9,10 @@ using Quartz;
 namespace BuildingBlocks.Messaging.Outbox.Jobs;
 
 [DisallowConcurrentExecution]
-public class OutBoxDomainEventNotificationsJob<TModule> : IJob
+internal class OutBoxDomainEventNotificationsJob<TModule> : IJob
     where TModule : class, IModule
 {
-    public static readonly JobKey Key = new JobKey($"{typeof(TModule).GetModuleName()}-OutBox-DomainEventNotifications-Job", "OutBox-DomainEvenNotifications-Group");
+    internal static readonly JobKey Key = new JobKey($"{typeof(TModule).GetModuleName()}-OutBox-DomainEventNotifications-Job", "OutBox-DomainEvenNotifications-Group");
 
 
     private readonly IServiceProvider _serviceProvider;
@@ -35,7 +35,7 @@ public class OutBoxDomainEventNotificationsJob<TModule> : IJob
         using var scope = _serviceProvider.CreateAsyncScope();
         var dbContext = (DbContext)scope.ServiceProvider.GetRequiredService(dbContextType);
 
-        _logger.LogInformation($"{_clock.Now}, job outbox test!!!!");
+        _logger.LogInformation($"{_clock.Now}, job outbox {Key.Name} test!!!!");
         return Task.CompletedTask;
     }
 }

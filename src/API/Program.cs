@@ -9,8 +9,7 @@ var configuration = builder.Configuration;
 
 services
     .AddBuildingBlocksServices()
-    .AddMessageBroker()
-    .AddMessagingJobs()
+    .AddMessaging()
     .RegisterModulesServices(configuration);
 
 

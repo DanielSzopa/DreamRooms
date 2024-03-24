@@ -8,7 +8,14 @@ namespace Api;
 
 internal static class Extensions
 {
-    internal static IServiceCollection AddMessageBroker(this IServiceCollection services)
+    internal static IServiceCollection AddMessaging(this IServiceCollection services)
+    {
+        return services
+            .AddMessageBroker()
+            .AddMessagingJobs();
+    }
+
+    private static IServiceCollection AddMessageBroker(this IServiceCollection services)
     {
         return services.AddMassTransit(cfg =>
         {
@@ -21,20 +28,11 @@ internal static class Extensions
         });
     }
 
-    internal static IServiceCollection AddMessagingJobs(this IServiceCollection services)
+    private static IServiceCollection AddMessagingJobs(this IServiceCollection services)
     {
         services.AddQuartz(options =>
         {
-            options.AddJob<OutBoxDomainEventNotificationsJob<StaffModule>>(OutBoxDomainEventNotificationsJob<StaffModule>.Key)
-            .AddTrigger(trigger =>
-            {
-                trigger.ForJob(OutBoxDomainEventNotificationsJob<StaffModule>.Key)
-                .WithSimpleSchedule(schedule =>
-                {
-                    schedule.WithIntervalInSeconds(3)
-                    .RepeatForever();
-                });
-            });
+            options.AddDomainEventNotificationsJob<StaffModule>();
         })
         .AddQuartzHostedService(options =>
         {
