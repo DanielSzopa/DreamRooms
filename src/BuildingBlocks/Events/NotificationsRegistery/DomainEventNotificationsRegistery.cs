@@ -3,18 +3,26 @@
 namespace BuildingBlocks.Events.NotificationsRegistery;
 internal class DomainEventNotificationsRegistery
 {
-    internal Dictionary<Type, Type> DomainEventsMapper = new Dictionary<Type, Type>();
+    internal Dictionary<Type, Type> FromDomainEventToDomainEventNotifications = new Dictionary<Type, Type>();
+    internal Dictionary<string, Type> FromStringTypeToDomainEventNotifications = new Dictionary<string, Type>();
 
     internal void Register<TDomainEvent, TDomainEventNotification>()
         where TDomainEvent : class, IDomainEvent
         where TDomainEventNotification : class, IDomainEventNotification<IDomainEvent>
     {
-        DomainEventsMapper[typeof(TDomainEvent)] = typeof(TDomainEventNotification);
+        FromDomainEventToDomainEventNotifications[typeof(TDomainEvent)] = typeof(TDomainEventNotification);
+        FromStringTypeToDomainEventNotifications[typeof(TDomainEventNotification).ToString()] = typeof(TDomainEventNotification);
     }
 
-    internal Type Resolve(Type domainEventType)
+    internal Type ResolveFromDomainEvent(Type domainEventType)
     {
-        var result = DomainEventsMapper.TryGetValue(domainEventType, out var domainEventNotification);
+        var result = FromDomainEventToDomainEventNotifications.TryGetValue(domainEventType, out var domainEventNotification);
+        return result ? domainEventNotification : null;
+    }
+
+    internal Type ResolveDomainEventNotificationFromStringType(string domainEventNotificationType)
+    {
+        var result = FromStringTypeToDomainEventNotifications.TryGetValue(domainEventNotificationType, out var domainEventNotification);
         return result ? domainEventNotification : null;
     }
 }

@@ -9,7 +9,7 @@ using BuildingBlocks.Messaging.Outbox;
 using BuildingBlocks.Modules;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace BuildingBlocks.Events.Dispatcher;
 internal class DomainEventsDispatcher : IDomainEventsDispatcher
@@ -43,13 +43,13 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
             return;
 
         List<Task> domainEventHandlingTasks = new List<Task>();
-        List<IDomainEventNotification<IDomainEvent>> domainEventNotifications = new ();
+        List<IDomainEventNotification<IDomainEvent>> domainEventNotifications = new();
 
         foreach (var domainEvent in domainEvents)
         {
             var domainEventType = domainEvent.GetType();
-            var domainEventNotificationType = _domainEventNotificationsRegistery.Resolve(domainEventType);
-            if(domainEventNotificationType is not null)
+            var domainEventNotificationType = _domainEventNotificationsRegistery.ResolveFromDomainEvent(domainEventType);
+            if (domainEventNotificationType is not null)
             {
                 domainEventNotifications.Add(_domainEventNotificationsCreator.Create(domainEventNotificationType, domainEvent));
             }
@@ -69,7 +69,7 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
             Type = d.GetType().ToString(),
             Module = d.GetModuleName(),
             CreatedAt = _clock.Now,
-            Data = JsonSerializer.Serialize(d)
+            Data = JsonConvert.SerializeObject(d)
         });
 
         var outBox = new OutBox(dbContext);
