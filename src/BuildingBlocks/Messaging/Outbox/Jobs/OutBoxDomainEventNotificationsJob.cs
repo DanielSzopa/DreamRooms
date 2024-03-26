@@ -1,5 +1,5 @@
 ﻿using BuildingBlocks.Events.Basics;
-using BuildingBlocks.Events.DomainEventsHandlers;
+using BuildingBlocks.Events.DomainEventNotificationHandlers;
 using BuildingBlocks.Events.NotificationsRegistery;
 using BuildingBlocks.Helpers.Clock;
 using BuildingBlocks.Modules;
@@ -49,7 +49,13 @@ internal class OutBoxDomainEventNotificationsJob<TModule> : IJob
             return;
         }
 
-        var domainEventNotifications = messages.Select(m => (IDomainEventHandler<IDomainEvent>)JsonConvert.DeserializeObject(m.Data, _domainEventNotificationsRegistery.ResolveDomainEventNotificationFromStringType(m.Type))).ToList();
+        foreach( var message in messages)
+        {
+            var notificationType = _domainEventNotificationsRegistery.ResolveDomainEventNotificationFromStringType(message.Type);
+            var notification = (IDomainEventNotification<IDomainEvent>)JsonConvert.DeserializeObject(message.Data, notificationType);
+            var handlerType = typeof(IDomainEventNotificationHandler<>).MakeGenericType(notificationType);
+            var notificationHandlers = scope.ServiceProvider.GetServices(handlerType);
+        }
 
         _logger.LogInformation($"{_clock.Now}, job outbox {Key.Name} test!!!!");
     }
