@@ -19,6 +19,7 @@ internal static class Extensions
             .AddSingleton<IDomainEventNotificationsCreator, DomainEventNotificationsCreator>()
             .AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>()
             .AddScoped<IDomainEventsPublisher,DomainEventsPublisher>()
+            .AddScoped<IDomainEventNotificationsPublisher,DomainEventNotificationPublisher>()
             .AddSingleton(new DomainEventNotificationsRegistery());
 
         return services;

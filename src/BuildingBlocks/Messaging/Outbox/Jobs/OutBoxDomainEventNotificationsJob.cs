@@ -1,13 +1,10 @@
-﻿using BuildingBlocks.Events.Basics;
-using BuildingBlocks.Events.DomainEventNotificationHandlers;
-using BuildingBlocks.Events.NotificationsRegistery;
+﻿using BuildingBlocks.Events.Publishers;
 using BuildingBlocks.Helpers.Clock;
 using BuildingBlocks.Modules;
 using BuildingBlocks.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Quartz;
 
 namespace BuildingBlocks.Messaging.Outbox.Jobs;
@@ -24,38 +21,45 @@ internal class OutBoxDomainEventNotificationsJob<TModule> : IJob
     private readonly DbContextTypeRegistery _dbContextTypeRegistery;
     private readonly ILogger<OutBoxDomainEventNotificationsJob<IModule>> _logger;
     private readonly IClock _clock;
-    private readonly DomainEventNotificationsRegistery _domainEventNotificationsRegistery;
+    private readonly IDomainEventNotificationsPublisher _domainEventNotificationsPublisher;
+    private readonly IDomainEventNotificationOutBox _outBox;
 
     public OutBoxDomainEventNotificationsJob(IServiceProvider serviceProvider, DbContextTypeRegistery dbContextTypeRegistery
-        ,ILogger<OutBoxDomainEventNotificationsJob<IModule>> logger, IClock clock, DomainEventNotificationsRegistery domainEventNotificationsRegistery)
+        , ILogger<OutBoxDomainEventNotificationsJob<IModule>> logger, IClock clock, IDomainEventNotificationsPublisher domainEventNotificationsPublisher,
+        IDomainEventNotificationOutBox outBox)
     {
         _serviceProvider = serviceProvider;
         _dbContextTypeRegistery = dbContextTypeRegistery;
         _logger = logger;
         _clock = clock;
-        _domainEventNotificationsRegistery = domainEventNotificationsRegistery;
+        _domainEventNotificationsPublisher = domainEventNotificationsPublisher;
+        _outBox = outBox;
     }
 
     public async Task Execute(IJobExecutionContext context)
     {
         var dbContextType = _dbContextTypeRegistery.Resolve<TModule>();
-        using var scope = _serviceProvider.CreateAsyncScope();
-        var dbContext = (DbContext)scope.ServiceProvider.GetRequiredService(dbContextType);
-        var outBox = new OutBox(dbContext);
+        var dbContext = (DbContext)_serviceProvider.GetRequiredService(dbContextType);
 
-        var messages = await outBox.GetDomainEventNotificationsAsync(ModuleName, context.CancellationToken);
+        var messages = await _outBox.GetMessagesAsync(ModuleName, dbContext, context.CancellationToken);
         if (!messages.Any())
         {
             return;
         }
 
-        foreach( var message in messages)
+        var tasksResults = new List<Task>();
+
+        foreach (var message in messages)
         {
-            var notificationType = _domainEventNotificationsRegistery.ResolveDomainEventNotificationFromStringType(message.Type);
-            var notification = (IDomainEventNotification<IDomainEvent>)JsonConvert.DeserializeObject(message.Data, notificationType);
-            var handlerType = typeof(IDomainEventNotificationHandler<>).MakeGenericType(notificationType);
-            var notificationHandlers = scope.ServiceProvider.GetServices(handlerType);
+            var notificationHandlingTasks = _domainEventNotificationsPublisher.PublishAsync(message.Type, message.Data, context.CancellationToken);
+            tasksResults.AddRange(notificationHandlingTasks);
         }
+
+        await Task.WhenAll(tasksResults);
+
+        _outBox.Clean(messages);
+
+        await dbContext.SaveChangesAsync();
 
         _logger.LogInformation($"{_clock.Now}, job outbox {Key.Name} test!!!!");
     }

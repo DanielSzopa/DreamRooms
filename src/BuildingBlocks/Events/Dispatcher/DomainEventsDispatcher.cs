@@ -20,10 +20,11 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
     private readonly DomainEventNotificationsRegistery _domainEventNotificationsRegistery;
     private readonly IContextAccessor _contextAccessor;
     private readonly IClock _clock;
+    private readonly IDomainEventNotificationOutBox _outBox;
 
     public DomainEventsDispatcher(IDomainEventsPublisher domainEventsPublisher, IDomainEventNotificationsCreator domainEventNotificationsCreator,
         IServiceProvider serviceProvider, DomainEventNotificationsRegistery domainEventNotificationsRegistery, IContextAccessor contextAccessor,
-        IClock clock)
+        IClock clock, IDomainEventNotificationOutBox outBox)
     {
         _domainEventsPublisher = domainEventsPublisher;
         _domainEventNotificationsCreator = domainEventNotificationsCreator;
@@ -31,6 +32,7 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
         _domainEventNotificationsRegistery = domainEventNotificationsRegistery;
         _contextAccessor = contextAccessor;
         _clock = clock;
+        _outBox = outBox;
     }
 
     public async Task DispatchAsync(Type dbContextType, CancellationToken cancellationToken = default)
@@ -72,8 +74,7 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
             Data = JsonConvert.SerializeObject(d)
         });
 
-        var outBox = new OutBox(dbContext);
-        await outBox.SendAsync(outBoxMessages, cancellationToken);
+        await _outBox.SendAsync(outBoxMessages, dbContext, cancellationToken);
 
         await Task.WhenAll(domainEventHandlingTasks);
     }

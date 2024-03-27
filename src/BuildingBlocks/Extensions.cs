@@ -2,7 +2,7 @@
 using BuildingBlocks.Context;
 using BuildingBlocks.Events;
 using BuildingBlocks.Helpers.Clock;
-using BuildingBlocks.Messaging;
+using BuildingBlocks.Messaging.Outbox;
 using BuildingBlocks.Middlewares;
 using BuildingBlocks.Persistence;
 using BuildingBlocks.UnitOfWork;
@@ -23,6 +23,7 @@ public static class Extensions
             .AddCommands()
             .AddSingleton(new UnitOfWorkTypeRegistery())
             .AddSingleton(new DbContextTypeRegistery())
-            .AddSingleton<IClock, Clock>();
+            .AddSingleton<IClock, Clock>()
+            .AddOutbox();
     }
 }
