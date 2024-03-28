@@ -2,8 +2,14 @@ using Api;
 using BuildingBlocks;
 using BuildingBlocks.Middlewares;
 using BuildingBlocks.Modules;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((ctx, cfg) =>
+{
+    cfg.ReadFrom.Configuration(ctx.Configuration);
+});
+
 var services = builder.Services;
 var configuration = builder.Configuration;
 
