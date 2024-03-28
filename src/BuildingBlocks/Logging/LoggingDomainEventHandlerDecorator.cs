@@ -14,26 +14,20 @@ internal class LoggingDomainEventHandlerDecorator<TEvent> : IDomainEventHandler<
 {
     private readonly IDomainEventHandler<TEvent> _decoratedDomainEventHandler;
     private readonly ILogger<LoggingDomainEventHandlerDecorator<TEvent>> _logger;
-    private readonly IContextAccessor _context;
 
-    public LoggingDomainEventHandlerDecorator(IDomainEventHandler<TEvent> decoratedDomainEventHandler, ILogger<LoggingDomainEventHandlerDecorator<TEvent>> logger,
-        IContextAccessor contextAccessor)
+    public LoggingDomainEventHandlerDecorator(IDomainEventHandler<TEvent> decoratedDomainEventHandler, ILogger<LoggingDomainEventHandlerDecorator<TEvent>> logger)
     {
         _decoratedDomainEventHandler = decoratedDomainEventHandler;
         _logger = logger;
-        _context = contextAccessor;
     }
 
     public async Task HandleAsync(TEvent @event, CancellationToken cancellationToken = default)
     {
-        var correlationId = _context.CorrelationId;
-        var traceId = _context.TraceId;
-
         var module = @event.GetModuleName();
         var name = @event.GetType().Name.Underscore();
 
-        _logger.LogInformation("Handling a domain event {name} [Module: {module}, TraceId: {traceId}, CorrelationId: {correlationId}]", name, module, traceId, correlationId);
+        _logger.LogInformation("Handling a domain event {name} [Module: {module}]", name, module);
         await _decoratedDomainEventHandler.HandleAsync(@event, cancellationToken);
-        _logger.LogInformation("Handled a domain event {name} [Module: {module}, TraceId: {traceId}, CorrelationId: {correlationId}]", name, module, traceId, correlationId);
+        _logger.LogInformation("Handled a domain event {name} [Module: {module}]", name, module);
     }
 }

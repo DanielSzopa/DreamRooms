@@ -1,5 +1,6 @@
 ﻿namespace BuildingBlocks;
 public class Constants
 {
-    public const string CorrelationIdHeader = "CorrelationId";
+    public const string CorrelationId = "CorrelationId";
+    public const string TraceId = "TraceId";
 }

@@ -6,7 +6,7 @@ internal class CorrelationMiddleware : IMiddleware
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         var correlationId = Guid.NewGuid();
-        context.Request?.Headers?.Append(Constants.CorrelationIdHeader, correlationId.ToString());
+        context.Request?.Headers?.Append(Constants.CorrelationId, correlationId.ToString());
 
         await next.Invoke(context);
     }

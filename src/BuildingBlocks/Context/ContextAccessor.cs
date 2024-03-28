@@ -16,12 +16,12 @@ internal class ContextAccessor : IContextAccessor
         get
         {
             if(HttpContextRequestIsAvailable
-                && _httpContextAccessor.HttpContext.Request.Headers.Any(h => h.Key == Constants.CorrelationIdHeader))
+                && _httpContextAccessor.HttpContext.Request.Headers.Any(h => h.Key == Constants.CorrelationId))
             {
-                return Guid.Parse(_httpContextAccessor.HttpContext.Request.Headers[Constants.CorrelationIdHeader]);
+                return Guid.Parse(_httpContextAccessor.HttpContext.Request.Headers[Constants.CorrelationId]);
             }
 
-            throw new ApplicationException($"{Constants.CorrelationIdHeader} header is not available!");
+            throw new ApplicationException($"{Constants.CorrelationId} header is not available!");
         }
     }
 

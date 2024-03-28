@@ -7,6 +7,7 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((ctx, cfg) =>
 {
+    cfg.Enrich.FromLogContext();
     cfg.ReadFrom.Configuration(ctx.Configuration);
 });
 
@@ -23,8 +24,11 @@ var app = builder.Build();
 
 
 app.UseHttpsRedirection();
+
 app.UseCorrelationMiddleware();
+app.UseLoggingEnricherMiddleware();
 app.UseExceptionHandler(x => { });
+
 app.ExposeModulesEndpoints();
 
 app.Run();

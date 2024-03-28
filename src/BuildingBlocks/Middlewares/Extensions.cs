@@ -7,4 +7,9 @@ public static class Extensions
     {
         app.UseMiddleware<CorrelationMiddleware>();
     }
+
+    public static void UseLoggingEnricherMiddleware(this WebApplication app)
+    {
+        app.UseMiddleware<LoggingEnricherMiddleware>();
+    }
 }

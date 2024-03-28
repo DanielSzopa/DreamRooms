@@ -19,6 +19,7 @@ public static class Extensions
             .AddSingleton<IContextAccessor, ContextAccessor>()
             .AddExceptionHandler<GlobalExcepionsMiddleware>()
             .AddSingleton<CorrelationMiddleware>()
+            .AddSingleton<LoggingEnricherMiddleware>()
             .AddDomainEvents()
             .AddCommands()
             .AddSingleton(new UnitOfWorkTypeRegistery())
