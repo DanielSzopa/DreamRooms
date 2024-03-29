@@ -1,5 +1,6 @@
 using Api;
 using BuildingBlocks;
+using BuildingBlocks.Logging.Enrichers;
 using BuildingBlocks.Middlewares;
 using BuildingBlocks.Modules;
 using Serilog;
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((ctx, cfg) =>
 {
     cfg.Enrich.FromLogContext();
+    cfg.Enrich.With(new RemoveUnnecessaryPropertiesEnricher());
     cfg.ReadFrom.Configuration(ctx.Configuration);
 });
 

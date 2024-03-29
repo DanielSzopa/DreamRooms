@@ -28,9 +28,9 @@ internal class LoggingDomainEventHandlerDecorator<TEvent> : IDomainEventHandler<
 
         using (LogContext.Push(new ModuleEnricher(@event.GetModuleName())))
         {
-            _logger.LogInformation("Handling a domain event: {domainEvent}", domainEvent);
+            _logger.LogInformation("Handling a domain event: {DomainEvent}", domainEvent);
             await _decoratedDomainEventHandler.HandleAsync(@event, cancellationToken);
-            _logger.LogInformation("Handled a domain event: {domainEvent}", domainEvent);
+            _logger.LogInformation("Handled a domain event: {DomainEvent}", domainEvent);
         }
     }
 }

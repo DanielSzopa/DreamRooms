@@ -27,9 +27,9 @@ internal class LoggingCommandHandlerDecorator<TCommand> : ICommandHandler<TComma
 
         using (LogContext.Push(new ModuleEnricher(command.GetModuleName())))
         {
-            _logger.LogInformation("Handling a command: {command}", commandName);
+            _logger.LogInformation("Handling a command: {Command}", commandName);
             await _decoratedCommandHandler.HandleAsync(command, cancellationToken);
-            _logger.LogInformation("Handled a command: {command}", commandName);
+            _logger.LogInformation("Handled a command: {Command}", commandName);
         }
     }
 }

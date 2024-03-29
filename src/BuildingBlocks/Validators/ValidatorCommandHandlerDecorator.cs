@@ -36,9 +36,9 @@ internal class ValidatorCommandHandlerDecorator<TCommand> : ICommandHandler<TCom
 
         using(LogContext.Push(new ModuleEnricher(command.GetModuleName())))
         {
-            _logger.LogInformation("Validating a command: {command}", commandName);
+            _logger.LogInformation("Validating a Command: {command}", commandName);
             _validator.ValidateAndThrow(command);
-            _logger.LogInformation("Validation a command: {command} passed", commandName);
+            _logger.LogInformation("Validation a Command: {command} passed", commandName);
         }
         
         await _commandHandler.HandleAsync(command, cancellationToken);
