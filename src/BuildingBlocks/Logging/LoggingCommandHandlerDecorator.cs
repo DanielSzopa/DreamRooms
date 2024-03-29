@@ -1,9 +1,10 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
-using BuildingBlocks.Context;
 using BuildingBlocks.Helpers.Decorators;
+using BuildingBlocks.Logging.Enrichers;
 using BuildingBlocks.Modules;
 using Humanizer;
 using Microsoft.Extensions.Logging;
+using Serilog.Context;
 
 namespace BuildingBlocks.Logging;
 
@@ -22,11 +23,13 @@ internal class LoggingCommandHandlerDecorator<TCommand> : ICommandHandler<TComma
 
     public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
     {
-        var module = command.GetModuleName();
-        var name = command.GetType().Name.Underscore();
+        var commandName = command.GetType().Name.Underscore();
 
-        _logger.LogInformation("Handling a command {name} [Module: {module}]", name, module);
-        await _decoratedCommandHandler.HandleAsync(command, cancellationToken);
-        _logger.LogInformation("Handled a command {name} [Module: {module}]", name, module);
+        using (LogContext.Push(new ModuleEnricher(command.GetModuleName())))
+        {
+            _logger.LogInformation("Handling a command: {command}", commandName);
+            await _decoratedCommandHandler.HandleAsync(command, cancellationToken);
+            _logger.LogInformation("Handled a command: {command}", commandName);
+        }
     }
 }

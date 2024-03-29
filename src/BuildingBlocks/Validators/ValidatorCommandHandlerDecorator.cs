@@ -1,10 +1,11 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
-using BuildingBlocks.Context;
 using BuildingBlocks.Helpers.Decorators;
+using BuildingBlocks.Logging.Enrichers;
 using BuildingBlocks.Modules;
 using FluentValidation;
 using Humanizer;
 using Microsoft.Extensions.Logging;
+using Serilog.Context;
 
 namespace BuildingBlocks.Validators;
 
@@ -31,13 +32,15 @@ internal class ValidatorCommandHandlerDecorator<TCommand> : ICommandHandler<TCom
             await _commandHandler.HandleAsync(command, cancellationToken);
         }
 
-        var module = command.GetModuleName();
-        var name = command.GetType().Name.Underscore();
+        var commandName = command.GetType().Name.Underscore();
 
-        _logger.LogInformation("Validating a command {name} [Module: {module}]", name, module);
-        _validator.ValidateAndThrow(command);
-        _logger.LogInformation("Validation a command {name} passed [Module: {module}]", name, module);
-
+        using(LogContext.Push(new ModuleEnricher(command.GetModuleName())))
+        {
+            _logger.LogInformation("Validating a command: {command}", commandName);
+            _validator.ValidateAndThrow(command);
+            _logger.LogInformation("Validation a command: {command} passed", commandName);
+        }
+        
         await _commandHandler.HandleAsync(command, cancellationToken);
     }
 }

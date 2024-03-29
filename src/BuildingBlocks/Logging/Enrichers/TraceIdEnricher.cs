@@ -14,6 +14,8 @@ internal class TraceIdEnricher : ILogEventEnricher
 
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
+        logEvent.RemovePropertyIfPresent("RequestId");
+        logEvent.RemovePropertyIfPresent("ConnectionId");
         logEvent.AddOrUpdateProperty(propertyFactory.CreateProperty(Constants.TraceId, _context.TraceId));
     }
 }
