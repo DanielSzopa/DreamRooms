@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Staff.Core.Domain.Events;
 
-namespace Staff.Core.Domain.EventHandlers;
+namespace Staff.Core.Domain.Events.EventHandlers;
 
 internal class SendReceptionistCreatedEmailDomainEventHandler : IDomainEventHandler<ReceptionistCreated>
 {
