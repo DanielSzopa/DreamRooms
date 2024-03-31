@@ -14,20 +14,21 @@ internal class ValidatorCommandHandlerDecorator<TCommand> : ICommandHandler<TCom
     where TCommand : class, ICommand
 {
     private readonly ICommandHandler<TCommand> _commandHandler;
-    private readonly IValidator<TCommand> _validator;
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<ValidatorCommandHandlerDecorator<TCommand>> _logger;
 
-    public ValidatorCommandHandlerDecorator(ICommandHandler<TCommand> commandHandler, IValidator<TCommand> validator,
+    public ValidatorCommandHandlerDecorator(ICommandHandler<TCommand> commandHandler, IServiceProvider serviceProvider,
         ILogger<ValidatorCommandHandlerDecorator<TCommand>> logger)
     {
         _commandHandler = commandHandler;
-        _validator = validator;
+        _serviceProvider = serviceProvider;
         _logger = logger;
     }
 
     public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
     {
-        if(_validator is null)
+        var validator = (IValidator<TCommand>)_serviceProvider.GetService(typeof(IValidator<TCommand>));
+        if(validator is null)
         {
             await _commandHandler.HandleAsync(command, cancellationToken);
         }
@@ -37,7 +38,7 @@ internal class ValidatorCommandHandlerDecorator<TCommand> : ICommandHandler<TCom
         using(LogContext.Push(new ModuleEnricher(command.GetModuleName())))
         {
             _logger.LogInformation("Validating a Command: {command}", commandName);
-            _validator.ValidateAndThrow(command);
+            validator.ValidateAndThrow(command);
             _logger.LogInformation("Validation a Command: {command} passed", commandName);
         }
         

@@ -17,5 +17,10 @@ internal class DbContextTypeRegistery
         return _types.TryGetValue(GetKey<T>(), out var type) ? type : null;
     }
 
+    internal Type Resolve(string moduleName)
+    {
+        return _types.TryGetValue(moduleName, out var type) ? type : null;
+    }
+
     private static string GetKey<T>() => $"{typeof(T).GetModuleName()}";
 }
