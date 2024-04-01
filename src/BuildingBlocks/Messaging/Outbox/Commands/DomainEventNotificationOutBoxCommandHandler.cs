@@ -1,6 +1,7 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
 using BuildingBlocks.Events.Publishers;
 using BuildingBlocks.Helpers.Clock;
+using BuildingBlocks.Messaging.Outbox.Repositories;
 using BuildingBlocks.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,11 +16,11 @@ namespace BuildingBlocks.Messaging.Outbox.Commands
         private readonly IDomainEventNotificationsPublisher _publisher;
         private readonly IClock _clock;
         private readonly ILogger<DomainEventNotificationOutBoxCommandHandler> _logger;
-        private readonly IDomainEventNotificationOutBox _outBox;
+        private readonly IDomainEventNotificationOutBoxRepository _outBox;
 
         public DomainEventNotificationOutBoxCommandHandler(IServiceProvider serviceProvider, DbContextTypeRegistery dbContextTypeRegistery,
             IDomainEventNotificationsPublisher publisher, IClock clock, ILogger<DomainEventNotificationOutBoxCommandHandler> logger,
-            IDomainEventNotificationOutBox outbox)
+            IDomainEventNotificationOutBoxRepository outbox)
         {
             _serviceProvider = serviceProvider;
             _dbContextTypeRegistery = dbContextTypeRegistery;

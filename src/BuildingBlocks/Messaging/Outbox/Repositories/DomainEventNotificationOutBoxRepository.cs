@@ -1,15 +1,14 @@
-﻿
-using BuildingBlocks.Events.Basics;
+﻿using BuildingBlocks.Events.Basics;
 using BuildingBlocks.Helpers.Clock;
 using Microsoft.EntityFrameworkCore;
 
-namespace BuildingBlocks.Messaging.Outbox
+namespace BuildingBlocks.Messaging.Outbox.Repositories
 {
-    internal class DomainEventNotificationOutBox : IDomainEventNotificationOutBox
+    internal class DomainEventNotificationOutBoxRepository : IDomainEventNotificationOutBoxRepository
     {
         private readonly IClock _clock;
 
-        public DomainEventNotificationOutBox(IClock clock)
+        public DomainEventNotificationOutBoxRepository(IClock clock)
         {
             _clock = clock;
         }
@@ -42,7 +41,7 @@ namespace BuildingBlocks.Messaging.Outbox
             if (outboxMessages is null || outboxMessages.Count() <= 0)
                 return;
 
-            foreach(var message in outboxMessages)
+            foreach (var message in outboxMessages)
             {
                 message.ProcessedAt = _clock.Now;
             }

@@ -6,6 +6,7 @@ using BuildingBlocks.Events.Providers;
 using BuildingBlocks.Events.Publishers;
 using BuildingBlocks.Helpers.Clock;
 using BuildingBlocks.Messaging.Outbox;
+using BuildingBlocks.Messaging.Outbox.Repositories;
 using BuildingBlocks.Modules;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,11 +21,11 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
     private readonly DomainEventNotificationsRegistery _domainEventNotificationsRegistery;
     private readonly IContextAccessor _contextAccessor;
     private readonly IClock _clock;
-    private readonly IDomainEventNotificationOutBox _outBox;
+    private readonly IDomainEventNotificationOutBoxRepository _outBox;
 
     public DomainEventsDispatcher(IDomainEventsPublisher domainEventsPublisher, IDomainEventNotificationsCreator domainEventNotificationsCreator,
         IServiceProvider serviceProvider, DomainEventNotificationsRegistery domainEventNotificationsRegistery, IContextAccessor contextAccessor,
-        IClock clock, IDomainEventNotificationOutBox outBox)
+        IClock clock, IDomainEventNotificationOutBoxRepository outBox)
     {
         _domainEventsPublisher = domainEventsPublisher;
         _domainEventNotificationsCreator = domainEventNotificationsCreator;

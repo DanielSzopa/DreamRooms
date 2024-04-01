@@ -2,7 +2,7 @@
 using BuildingBlocks.Modules;
 using MassTransit;
 using Quartz;
-using Staff.Core;
+using Staff.Core.Outbox;
 
 namespace Api;
 
@@ -32,7 +32,7 @@ internal static class Extensions
     {
         services.AddQuartz(options =>
         {
-            options.AddDomainEventNotificationsJob<StaffModule>();
+            options.AddDomainEventNotificationsJob<StaffOutBoxDomainEventNotificationsJob>();
         })
         .AddQuartzHostedService(options =>
         {

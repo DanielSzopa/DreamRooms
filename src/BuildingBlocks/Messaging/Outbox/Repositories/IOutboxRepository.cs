@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace BuildingBlocks.Messaging.Outbox;
+namespace BuildingBlocks.Messaging.Outbox.Repositories;
 
-internal interface IOutbox
+internal interface IOutboxRepository
 {
     Task SendAsync(IEnumerable<OutboxMessage> outboxMessages, DbContext dbContext, CancellationToken cancellationToken = default);
 

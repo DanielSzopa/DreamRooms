@@ -4,13 +4,16 @@ using Quartz;
 namespace BuildingBlocks.Messaging.Outbox.Jobs;
 public static class OutBoxDomainEventNotificationsJobSetup
 {
-    public static IServiceCollectionQuartzConfigurator AddDomainEventNotificationsJob<TModule>(this IServiceCollectionQuartzConfigurator config)
-        where TModule : class, IModule
+    public static IServiceCollectionQuartzConfigurator AddDomainEventNotificationsJob<TJob>(this IServiceCollectionQuartzConfigurator config)
+        where TJob : class, IJob
     {
-        return config.AddJob<OutBoxDomainEventNotificationsJob<TModule>>(OutBoxDomainEventNotificationsJob<TModule>.Key)
+        var module = typeof(TJob).GetModuleName();
+        var key = new JobKey($"{module}-OutBox-DomainEventNotifications-Job", OutBoxConstants.OutBoxDomainEventNotificationsGroup);
+
+        return config.AddJob<TJob>(key)
             .AddTrigger(trigger =>
             {
-                trigger.ForJob(OutBoxDomainEventNotificationsJob<TModule>.Key)
+                trigger.ForJob(key)
                 .WithSimpleSchedule(schedule =>
                 {
                     schedule.WithIntervalInSeconds(2)
