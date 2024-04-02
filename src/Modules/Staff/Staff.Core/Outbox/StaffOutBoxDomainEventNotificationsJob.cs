@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.Commands;
+﻿using BuildingBlocks.Messaging.Outbox.Processors;
+using BuildingBlocks.Modules;
 using Quartz;
 
 namespace Staff.Core.Outbox;
@@ -6,16 +7,15 @@ namespace Staff.Core.Outbox;
 [DisallowConcurrentExecution]
 public class StaffOutBoxDomainEventNotificationsJob : IJob
 {
-    private readonly ICommandDispatcher _commandDispatcher;
+    private readonly IDomainEventNotificationOutBoxProcessor _outBoxProcessor;
 
-    public StaffOutBoxDomainEventNotificationsJob(ICommandDispatcher commandDispatcher)
+    public StaffOutBoxDomainEventNotificationsJob(IDomainEventNotificationOutBoxProcessor processor)
     {
-        _commandDispatcher = commandDispatcher;
+        _outBoxProcessor = processor;
     }
 
     public async Task Execute(IJobExecutionContext context)
     {
-        var command = new StaffOutboxDomainEventNotificationCommand();
-        await _commandDispatcher.SendAsync(command, context.CancellationToken);
+        await _outBoxProcessor.ProcessAsync(typeof(StaffOutBoxDomainEventNotificationsJob).GetModuleName(), context.CancellationToken);
     }
 }

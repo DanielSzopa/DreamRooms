@@ -31,6 +31,7 @@ internal class ValidatorCommandHandlerDecorator<TCommand> : ICommandHandler<TCom
         if(validator is null)
         {
             await _commandHandler.HandleAsync(command, cancellationToken);
+            return;
         }
 
         var commandName = command.GetType().Name.Underscore();

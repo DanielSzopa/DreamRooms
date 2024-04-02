@@ -1,8 +1,8 @@
 ﻿namespace BuildingBlocks.Modules;
 
-internal static class Extensions
+public static class Extensions
 {
-    internal static string GetModuleName(this Type type)
+    public static string GetModuleName(this Type type)
     {
         if (type?.Namespace is null)
         {
@@ -14,7 +14,7 @@ internal static class Extensions
             .First();
     }
 
-    internal static string GetModuleName(this object obj)
+    public static string GetModuleName(this object obj)
     {
         return obj?.GetType().GetModuleName();
     }

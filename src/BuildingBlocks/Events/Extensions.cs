@@ -41,9 +41,12 @@ internal static class Extensions
     private static IServiceCollection AddDomainEventNotificationHandlers(this IServiceCollection services)
     {
         services.Scan(s => s.FromApplicationDependencies()
-        .AddClasses(c => c.AssignableTo(typeof(IDomainEventNotificationHandler<>)))
+        .AddClasses(c => c.AssignableTo(typeof(IDomainEventNotificationHandler<>))
+        .WithoutAttribute<DecoratorAttribute>())
         .AsImplementedInterfaces()
         .WithScopedLifetime());
+
+        services.Decorate(typeof(IDomainEventNotificationHandler<>), typeof(LoggingDomainEventNotificationHandlerDecorator<>));
 
         return services;
     }

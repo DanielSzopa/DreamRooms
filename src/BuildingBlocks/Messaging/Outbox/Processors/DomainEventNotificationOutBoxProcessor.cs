@@ -1,6 +1,6 @@
-﻿using BuildingBlocks.Abstractions.Commands;
-using BuildingBlocks.Events.Publishers;
+﻿using BuildingBlocks.Events.Publishers;
 using BuildingBlocks.Helpers.Clock;
+using BuildingBlocks.Messaging.Outbox.Processors;
 using BuildingBlocks.Messaging.Outbox.Repositories;
 using BuildingBlocks.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -9,17 +9,17 @@ using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.Messaging.Outbox.Commands
 {
-    internal class DomainEventNotificationOutBoxCommandHandler : ICommandHandler<DomainEventNotificationOutBoxCommand>
+    internal class DomainEventNotificationOutBoxProcessor : IDomainEventNotificationOutBoxProcessor
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly DbContextTypeRegistery _dbContextTypeRegistery;
         private readonly IDomainEventNotificationsPublisher _publisher;
         private readonly IClock _clock;
-        private readonly ILogger<DomainEventNotificationOutBoxCommandHandler> _logger;
+        private readonly ILogger<DomainEventNotificationOutBoxProcessor> _logger;
         private readonly IDomainEventNotificationOutBoxRepository _outBox;
 
-        public DomainEventNotificationOutBoxCommandHandler(IServiceProvider serviceProvider, DbContextTypeRegistery dbContextTypeRegistery,
-            IDomainEventNotificationsPublisher publisher, IClock clock, ILogger<DomainEventNotificationOutBoxCommandHandler> logger,
+        public DomainEventNotificationOutBoxProcessor(IServiceProvider serviceProvider, DbContextTypeRegistery dbContextTypeRegistery,
+            IDomainEventNotificationsPublisher publisher, IClock clock, ILogger<DomainEventNotificationOutBoxProcessor> logger,
             IDomainEventNotificationOutBoxRepository outbox)
         {
             _serviceProvider = serviceProvider;
@@ -30,12 +30,12 @@ namespace BuildingBlocks.Messaging.Outbox.Commands
             _outBox = outbox;
         }
 
-        public async Task HandleAsync(DomainEventNotificationOutBoxCommand command, CancellationToken cancellationToken = default)
+        public async Task ProcessAsync(string module, CancellationToken cancellationToken)
         {
-            var dbContextType = _dbContextTypeRegistery.Resolve(command.Module);
+            var dbContextType = _dbContextTypeRegistery.Resolve(module);
             var dbContext = (DbContext)_serviceProvider.GetRequiredService(dbContextType);
 
-            var messages = await _outBox.GetMessagesAsync(command.Module, dbContext, cancellationToken);
+            var messages = await _outBox.GetMessagesAsync(module, dbContext, cancellationToken);
             if (!messages.Any())
             {
                 return;
