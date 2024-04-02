@@ -15,7 +15,7 @@ internal class LoggingEnricherMiddleware : IMiddleware
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        using (LogContext.Push(new TraceIdEnricher(_context), new CorrelationIdEnricher(_context)))
+        using (LogContext.Push(new TraceIdEnricher(_context), new CorrelationIdEnricher(_context.CorrelationId)))
         {
             await next.Invoke(context);
         }

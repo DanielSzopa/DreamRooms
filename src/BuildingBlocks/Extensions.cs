@@ -15,7 +15,9 @@ public static class Extensions
     public static IServiceCollection AddBuildingBlocksServices(this IServiceCollection services)
     {
         return services
+            .AddMemoryCache()
             .AddHttpContextAccessor()
+            .AddSingleton<IMessageContextService, MessageContextService>()
             .AddSingleton<IContextAccessor, ContextAccessor>()
             .AddExceptionHandler<GlobalExcepionsMiddleware>()
             .AddSingleton<CorrelationMiddleware>()

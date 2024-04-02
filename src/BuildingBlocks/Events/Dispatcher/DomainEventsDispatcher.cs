@@ -22,10 +22,11 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
     private readonly IContextAccessor _contextAccessor;
     private readonly IClock _clock;
     private readonly IDomainEventNotificationOutBoxRepository _outBox;
+    private readonly IMessageContextService _messageContextService;
 
     public DomainEventsDispatcher(IDomainEventsPublisher domainEventsPublisher, IDomainEventNotificationsCreator domainEventNotificationsCreator,
         IServiceProvider serviceProvider, DomainEventNotificationsRegistery domainEventNotificationsRegistery, IContextAccessor contextAccessor,
-        IClock clock, IDomainEventNotificationOutBoxRepository outBox)
+        IClock clock, IDomainEventNotificationOutBoxRepository outBox, IMessageContextService messageContextService)
     {
         _domainEventsPublisher = domainEventsPublisher;
         _domainEventNotificationsCreator = domainEventNotificationsCreator;
@@ -34,6 +35,7 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
         _contextAccessor = contextAccessor;
         _clock = clock;
         _outBox = outBox;
+        _messageContextService = messageContextService;
     }
 
     public async Task DispatchAsync(Type dbContextType, CancellationToken cancellationToken = default)
@@ -54,7 +56,9 @@ internal class DomainEventsDispatcher : IDomainEventsDispatcher
             var domainEventNotificationType = _domainEventNotificationsRegistery.ResolveFromDomainEvent(domainEventType);
             if (domainEventNotificationType is not null)
             {
-                domainEventNotifications.Add(_domainEventNotificationsCreator.Create(domainEventNotificationType, domainEvent));
+                var notification = _domainEventNotificationsCreator.Create(domainEventNotificationType, domainEvent);
+                _messageContextService.Set(notification.EventId, new MessageContext(_contextAccessor.CorrelationId));
+                domainEventNotifications.Add(notification);
             }
 
             var handlingTasks = _domainEventsPublisher.PublishAsync(domainEvent, cancellationToken);

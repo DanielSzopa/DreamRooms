@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.Events.Basics;
+﻿using BuildingBlocks.Context;
+using BuildingBlocks.Events.Basics;
 using BuildingBlocks.Events.DomainEventNotificationHandlers;
 using BuildingBlocks.Helpers.Decorators;
 using BuildingBlocks.Logging.Enrichers;
@@ -15,19 +16,22 @@ internal class LoggingDomainEventNotificationHandlerDecorator<TEvent> : IDomainE
 {
     private readonly IDomainEventNotificationHandler<TEvent> _decoratedNotificationHandler;
     private readonly ILogger<LoggingDomainEventNotificationHandlerDecorator<TEvent>> _logger;
+    private readonly IMessageContextService _messageContextService;
 
     public LoggingDomainEventNotificationHandlerDecorator(IDomainEventNotificationHandler<TEvent> decoratedNotificationHandler,
-        ILogger<LoggingDomainEventNotificationHandlerDecorator<TEvent>> logger)
+        ILogger<LoggingDomainEventNotificationHandlerDecorator<TEvent>> logger, IMessageContextService messageContextService)
     {
         _decoratedNotificationHandler = decoratedNotificationHandler;
         _logger = logger;
+        _messageContextService = messageContextService;
     }
 
     public async Task HandleAsync(TEvent @event, CancellationToken cancellationToken = default)
     {
         var notification = @event.GetType().Name.Underscore();
+        var correlationId = _messageContextService.Get(@event.EventId).CorrelationId;
 
-        using (LogContext.Push(new ModuleEnricher(@event.GetModuleName())))
+        using (LogContext.Push(new CorrelationIdEnricher(correlationId), new ModuleEnricher(@event.GetModuleName())))
         {
             _logger.LogInformation("Handling a domain event notification: {DomainEventNotification}", notification);
             await _decoratedNotificationHandler.HandleAsync(@event, cancellationToken);
