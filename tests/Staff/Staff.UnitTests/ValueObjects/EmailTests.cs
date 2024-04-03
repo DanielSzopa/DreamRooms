@@ -1,4 +1,5 @@
-﻿using Staff.Core.Domain.Exceptions;
+﻿using BuildingBlocks.Domain.ValueObjects;
+using Staff.Core.Domain.Exceptions;
 using Staff.Core.Domain.ValueObjects;
 
 namespace Staff.UnitTests.ValueObjects;

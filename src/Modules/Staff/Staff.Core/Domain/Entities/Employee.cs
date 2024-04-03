@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Domain.Entities;
+using BuildingBlocks.Domain.ValueObjects;
 using Staff.Core.Domain.Events;
 using Staff.Core.Domain.ValueObjects;
 using Staff.Core.Security;

@@ -3,9 +3,9 @@ using System.Net;
 
 namespace Staff.Core.Domain.Exceptions;
 
-internal class InvalidEmailException : DreamRoomsException
+public class InvalidEmailException : DreamRoomsException
 {
-    internal InvalidEmailException(string email) : base($"Provided email: {email} is invalid!")
+    public InvalidEmailException(string email) : base($"Provided email: {email} is invalid!")
     {
     }
 

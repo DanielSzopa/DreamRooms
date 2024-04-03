@@ -1,5 +1,6 @@
 ﻿using BuildingBlocks.Abstractions.Commands;
 using BuildingBlocks.Context;
+using BuildingBlocks.Domain.ValueObjects;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

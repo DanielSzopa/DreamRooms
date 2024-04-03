@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
+using Reservations.Core.Domain.Entities;
 using Staff.Contracts;
 
 namespace Reservations.Core.EventSubscriptions;
@@ -14,7 +15,10 @@ public class ReceptionistCreatedEventHandler : IConsumer<ReceptionistCreatedInte
 
     public Task Consume(ConsumeContext<ReceptionistCreatedIntegrationEvent> context)
     {
-        _logger.LogInformation($"Receptionist created consumed {context.Message.Id} {context.Message.FullName} {context.Message.Email} {context.CorrelationId}");
+        var message = context.Message;
+        var receptionist = Receptionist.Create(message.Id, message.FullName, message.Email);
+
+        _logger.LogInformation($"Receptionist created consumed {receptionist.EmployeeId} {receptionist.FullName} {receptionist.Email} {context.CorrelationId}");
         return Task.CompletedTask;
     }
 }
