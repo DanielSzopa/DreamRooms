@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Reservations.Core.Persistence;
 
 namespace Reservations.Core;
 public class ReservationsModule : IModule
@@ -13,6 +14,7 @@ public class ReservationsModule : IModule
 
     public IServiceCollection RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
-        return services;
+        return services
+            .AddReservationsPersistence(configuration);
     }
 }
