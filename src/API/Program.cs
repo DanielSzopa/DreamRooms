@@ -37,8 +37,7 @@ app.Run();
 
 
 //Todo:
-//Domain notifications outbox resolver
-//Structuring logging serilog
+//Create seperate migrations table per Module
+//Add reservations repository
 //New modules - Reservations, Room Service - Creating employee inside these modules also
-//Share context between modules
 
