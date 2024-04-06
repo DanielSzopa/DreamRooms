@@ -37,6 +37,5 @@ app.Run();
 
 
 //Todo:
-//Add reservations repository
 //New modules - Reservations, Room Service - Creating employee inside these modules also
 

@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Reservations.Core.Domain.Repositories;
+using Reservations.Core.Persistence.Repositories;
 
 namespace Reservations.Core.Persistence;
 internal static class Extensions
@@ -9,6 +11,7 @@ internal static class Extensions
     internal static IServiceCollection AddReservationsPersistence(this IServiceCollection services, IConfiguration configuration)
     {
         return services
+            .AddScoped<IReceptionistsRepository, ReceptionistsRepository>()
             .AddUnitOfWork<ReservationsUnitOfWork>()
             .AddReservationsDbContext(configuration);
     }

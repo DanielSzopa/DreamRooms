@@ -1,8 +1,10 @@
 ﻿using BuildingBlocks.Messaging.Outbox.Jobs;
 using BuildingBlocks.Modules;
 using MassTransit;
+using MassTransit.Metadata;
 using Quartz;
 using Staff.Core.Outbox;
+using System.Reflection;
 
 namespace Api;
 
@@ -19,13 +21,21 @@ internal static class Extensions
     {
         return services.AddMassTransit(cfg =>
         {
-            cfg.AddConsumers(ModulesRegistrator.ModulesAssemblies.ToArray());
+            cfg.AddConsumersIncludingInternalTypes(ModulesRegistrator.ModulesAssemblies.ToArray());
 
             cfg.UsingInMemory((ctx, cfg) =>
             {
                 cfg.ConfigureEndpoints(ctx);
             });
         });
+    }
+
+    private static void AddConsumersIncludingInternalTypes(this IBusRegistrationConfigurator cfg, Assembly[] assemblies)
+    {
+        var types = assemblies
+            .SelectMany(a => a.GetTypes().Where(t => RegistrationMetadata.IsConsumerOrDefinition(t)))
+            ?.ToArray();
+        cfg.AddConsumers(types);
     }
 
     private static IServiceCollection AddMessagingJobs(this IServiceCollection services)
