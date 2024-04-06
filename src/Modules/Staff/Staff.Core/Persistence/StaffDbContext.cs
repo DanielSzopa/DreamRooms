@@ -15,7 +15,7 @@ internal class StaffDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("staff");
+        modelBuilder.HasDefaultSchema(Constants.StaffSchema);
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
     }
 }

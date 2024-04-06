@@ -25,7 +25,7 @@ internal static class Extensions
             .AddDbContext<StaffDbContext>(options =>
             {
                 var connectionString = configuration.GetValue<string>("ConnectionStrings:Default");
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(connectionString, x => x.MigrationsHistoryTable("EfMigrations", Constants.StaffSchema));
             });
     }
 

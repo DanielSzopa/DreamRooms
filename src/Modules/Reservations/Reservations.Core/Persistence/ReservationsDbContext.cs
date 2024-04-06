@@ -13,7 +13,7 @@ internal class ReservationsDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("reservations");
+        modelBuilder.HasDefaultSchema(Constants.ReservationsSchema);
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
     }
 }

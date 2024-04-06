@@ -37,7 +37,6 @@ app.Run();
 
 
 //Todo:
-//Create seperate migrations table per Module
 //Add reservations repository
 //New modules - Reservations, Room Service - Creating employee inside these modules also
 
