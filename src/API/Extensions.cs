@@ -25,6 +25,7 @@ internal static class Extensions
 
             cfg.UsingInMemory((ctx, cfg) =>
             {
+                cfg.UseConsumeFilter(typeof(Filter<>), ctx);
                 cfg.ConfigureEndpoints(ctx);
             });
         });
