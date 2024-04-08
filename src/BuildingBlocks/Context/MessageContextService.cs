@@ -10,6 +10,15 @@ internal class MessageContextService : IMessageContextService
         _cache = cache;
     }
 
+    public MessageContext CreateNewContextWithValuesFromPreviousOne(Guid previousContextKey)
+    {
+        var previousContext = this.Get(previousContextKey);
+        if (previousContext is null)
+            return default;
+
+        return new MessageContext(previousContext.CorrelationId);
+    }
+
     public void Set<TContext>(Guid key, TContext messageContext) 
         where TContext : MessageContext
     {

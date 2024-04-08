@@ -23,10 +23,10 @@ internal class ReceptionistCreatedEventHandler : IConsumer<ReceptionistCreatedIn
     public async Task Consume(ConsumeContext<ReceptionistCreatedIntegrationEvent> context)
     {
         var message = context.Message;
-        var receptionist = Receptionist.Create(message.Id, message.FullName, message.Email);
+        var receptionist = Receptionist.Create(message.EventId, message.FullName, message.Email);
         await _receptionistsRepository.AddAsync(receptionist, context.CancellationToken);
 
-        _logger.LogInformation($"Receptionist created consumed {receptionist.EmployeeId.Value} {receptionist.FullName.Value} {receptionist.Email.Value} {context.CorrelationId}");
+        _logger.LogInformation($"Receptionist created consumed {receptionist.EmployeeId.Value} {receptionist.FullName.Value} {receptionist.Email.Value}");
         await _unitOfWork.CommitAsync(context.CancellationToken);
     }
 }

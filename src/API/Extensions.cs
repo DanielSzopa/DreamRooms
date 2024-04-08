@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.Messaging.Outbox.Jobs;
+﻿using BuildingBlocks.Messaging.ConsumersMiddlewares;
+using BuildingBlocks.Messaging.Outbox.Jobs;
 using BuildingBlocks.Modules;
 using MassTransit;
 using MassTransit.Metadata;
@@ -25,7 +26,7 @@ internal static class Extensions
 
             cfg.UsingInMemory((ctx, cfg) =>
             {
-                cfg.UseConsumeFilter(typeof(Filter<>), ctx);
+                cfg.UseConsumeFilter(typeof(ConsumerLoggingMiddleware<>), ctx);
                 cfg.ConfigureEndpoints(ctx);
             });
         });

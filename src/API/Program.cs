@@ -37,5 +37,7 @@ app.Run();
 
 
 //Todo:
-//New modules - Reservations, Room Service - Creating employee inside these modules also
+//Add Transactional outbox/inbox for integration events, also implement some error handling with dead letter storage
+//Error handling for notification outbox - maybe some deadletter table
+//Add more business logic
 

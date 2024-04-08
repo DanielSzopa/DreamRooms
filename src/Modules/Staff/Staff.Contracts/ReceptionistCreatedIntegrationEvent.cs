@@ -1,2 +1,4 @@
-﻿namespace Staff.Contracts;
-public record ReceptionistCreatedIntegrationEvent(Guid Id, string FullName, string Email);
+﻿using BuildingBlocks.Events.Basics;
+
+namespace Staff.Contracts;
+public record ReceptionistCreatedIntegrationEvent(string FullName, string Email) : IntegrationEventBase;

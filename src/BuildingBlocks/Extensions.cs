@@ -2,6 +2,7 @@
 using BuildingBlocks.Context;
 using BuildingBlocks.Events;
 using BuildingBlocks.Helpers.Clock;
+using BuildingBlocks.Messaging.Bus;
 using BuildingBlocks.Messaging.Outbox;
 using BuildingBlocks.Middlewares;
 using BuildingBlocks.Persistence;
@@ -27,6 +28,7 @@ public static class Extensions
             .AddSingleton(new UnitOfWorkTypeRegistery())
             .AddSingleton(new DbContextTypeRegistery())
             .AddSingleton<IClock, Clock>()
+            .AddScoped<IIntegrationEventsBus, IntegrationEventsBus>()
             .AddOutbox();
     }
 }
