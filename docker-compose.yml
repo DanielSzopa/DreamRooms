@@ -3,14 +3,11 @@ version: '3.8'
 services:
   database:
     container_name: dreamrooms-sql-server
-    image: mcr.microsoft.com/mssql/server:2019-latest
     ports:
       - 1433:1433
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=-Test123-
-      - MSSQL_PID=Express
-      - MSSQL_TCP_PORT=1433
+    build:
+      context: .
+      dockerfile: Database_Dockerfile
     volumes:
       - dreamrooms-volume:/var/opt/mssql
     networks:
