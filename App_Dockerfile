@@ -1,0 +1,13 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS publish
+WORKDIR /src
+COPY ["src/API/API.csproj", "./API/"] 
+COPY ["src/BuildingBlocks/BuildingBlocks.csproj", "./BuildingBlocks/"] 
+COPY ["src/Modules/Reservations/Reservations.Contracts/Reservations.Contracts.csproj", "./Modules/Reservations/Reservations.Contracts/"] 
+COPY ["src/Modules/Reservations/Reservations.Core/Reservations.Core.csproj", "./Modules/Reservations/Reservations.Core/"] 
+COPY ["src/Modules/Staff/Staff.Contracts/Staff.Contracts.csproj", "./Modules/Staff/Staff.Contracts/"] 
+COPY ["src/Modules/Staff/Staff.Core/Staff.Core.csproj", "./Modules/Staff/Staff.Core/"]
+RUN dotnet restore "API/API.csproj"
+
+COPY ./src .
+RUN dotnet publish "./API/API.csproj" -c Release --no-restore -o /app
+
