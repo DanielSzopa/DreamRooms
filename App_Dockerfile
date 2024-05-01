@@ -9,5 +9,16 @@ COPY ["src/Modules/Staff/Staff.Core/Staff.Core.csproj", "./Modules/Staff/Staff.C
 RUN dotnet restore "API/API.csproj"
 
 COPY ./src .
-RUN dotnet publish "./API/API.csproj" -c Release --no-restore -o /app
+RUN dotnet publish "./API/API.csproj" -c Release --no-restore -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+RUN ls
+
+EXPOSE 80
+EXPOSE 443
+
+ENTRYPOINT [ "dotnet", "API.dll" ]
 

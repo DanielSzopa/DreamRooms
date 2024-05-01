@@ -15,6 +15,7 @@ public class ReservationsModule : IModule
     public IServiceCollection RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
         return services
-            .AddReservationsPersistence(configuration);
+            .AddReservationsPersistence(configuration)
+            .AddHostedService<ReservationsDbContextInitializator>();
     }
 }

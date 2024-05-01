@@ -16,7 +16,8 @@ internal static class Extensions
             .AddStaffDbContext(configuration)
             .RegisterDbContextType<StaffDbContext>()
             .AddUnitOfWork<StaffUnitOfWork>()
-            .AddRepositories();
+            .AddRepositories()
+            .AddHostedService<StaffDbContextInitializator>();
     }
 
     private static IServiceCollection AddStaffDbContext(this IServiceCollection services, IConfiguration configuration)

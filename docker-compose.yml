@@ -1,6 +1,20 @@
 version: '3.8'
 
 services:
+  application:
+    container_name: dreamrooms-application
+    ports:
+      - 5000:80
+      - 5001:443
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings:Default=Server=localhost,1433;Database=DreamRoomsDb;User Id=sa;Password=-Test123-;Encrypt=False;
+    build:
+      context: .
+      dockerfile: App_Dockerfile
+    networks:
+      - dreamrooms-network
+
   database:
     container_name: dreamrooms-sql-server
     ports:
