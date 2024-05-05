@@ -8,7 +8,7 @@ services:
       - 5001:443
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings:Default=Server=localhost,1433;Database=DreamRoomsDb;User Id=sa;Password=-Test123-;Encrypt=False;
+      - ConnectionStrings:Default=Server=dreamrooms-sql-server,1433;Database=DreamRoomsDb;User Id=sa;Password=-Test123-;Encrypt=False;
     build:
       context: .
       dockerfile: App_Dockerfile
