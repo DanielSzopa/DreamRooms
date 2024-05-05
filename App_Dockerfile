@@ -1,4 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS publish
+ARG BUILD_TYPE=DEBUG
 WORKDIR /src
 COPY ["src/API/API.csproj", "./API/"] 
 COPY ["src/BuildingBlocks/BuildingBlocks.csproj", "./BuildingBlocks/"] 
@@ -9,7 +10,7 @@ COPY ["src/Modules/Staff/Staff.Core/Staff.Core.csproj", "./Modules/Staff/Staff.C
 RUN dotnet restore "API/API.csproj"
 
 COPY ./src .
-RUN dotnet publish "./API/API.csproj" -c Release --no-restore -o /app/publish
+RUN dotnet publish "./API/API.csproj" -c ${BUILD_TYPE} --no-restore -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
