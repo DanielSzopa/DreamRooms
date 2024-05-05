@@ -20,8 +20,7 @@ services:
       - 5000:443
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=5001
-      - ASPNETCORE_HTTPS_PORTS=5000
+      - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=CertPassword
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/home/app/.aspnet/https/dreamrooms.pfx
       - ConnectionStrings:Default=Server=dreamrooms-sql-server,1433;Database=DreamRoomsDb;User Id=sa;Password=-Test123-;Encrypt=False;
@@ -31,7 +30,7 @@ services:
     networks:
       - dreamrooms-network
     volumes:
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
     depends_on:
       - database
 
