@@ -8,6 +8,8 @@ services:
     build:
       context: .
       dockerfile: src/Api/Dockerfile
+      args:
+        - BUILD_CONFIGURATION=RELEASE
     environment:
       - ConnectionStrings__Default=Server=database,1433;Database=DreamRoomsDb;User Id=sa;Password=-Test123-;Encrypt=False;
       - ASPNETCORE_ENVIRONMENT=Development
