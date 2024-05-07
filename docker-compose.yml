@@ -1,42 +1,47 @@
-version: '3.8'
+version: '3.4'
 
+name: dreamrooms-compose
 services:
+  api:
+    image: ${DOCKER_REGISTRY-}dreamrooms_api
+    container_name: dreamrooms_api
+    build:
+      context: .
+      dockerfile: src/Api/Dockerfile
+      args:
+        - BUILD_CONFIGURATION=RELEASE
+    environment:
+      - ConnectionStrings__Default=Server=database,1433;Database=DreamRoomsDb;User Id=sa;Password=-Test123-;Encrypt=False;
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=80
+      - ASPNETCORE_HTTPS_PORTS=443
+    ports:
+      - '4000:80'
+      - '5000:443'
+    networks:
+      - default
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
   database:
-    container_name: dreamrooms-sql-server
+    container_name: dreamrooms_database
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=-Test123-
+      - MSSQL_PID=Express
+      - MSSQL_TCP_PORT=1433
     ports:
       - 1433:1433
-    build:
-      context: .
-      dockerfile: Database_Dockerfile
-    volumes:
-      - dreamrooms-volume:/var/opt/mssql
     networks:
-      - dreamrooms-network
-
-  application:
-    container_name: dreamrooms-application
-    ports:
-      - 5001:80
-      - 5000:443
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=CertPassword
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/home/app/.aspnet/https/dreamrooms.pfx
-      - ConnectionStrings:Default=Server=dreamrooms-sql-server,1433;Database=DreamRoomsDb;User Id=sa;Password=-Test123-;Encrypt=False;
-    build:
-      context: .
-      dockerfile: App_Dockerfile
-    networks:
-      - dreamrooms-network
+      - default
     volumes:
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-    depends_on:
-      - database
+      - db:/var/opt/mssql
 
 networks:
-  dreamrooms-network:
+  default:
     driver: bridge
 
 volumes:
-  dreamrooms-volume:
+  db:
