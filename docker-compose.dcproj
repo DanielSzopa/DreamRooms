@@ -4,6 +4,7 @@
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <DockerPublishLocally>False</DockerPublishLocally>
+    <DockerComposeProjectName>dreamrooms-compose</DockerComposeProjectName>
     <ProjectGuid>981adbb0-4cf7-488a-91bb-06b3a14d52e0</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
